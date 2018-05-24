@@ -1,12 +1,23 @@
 ## *ExampleBuildSrcKts*
 
-**What?** - Example for using a kotlin-dsl `buildSrc` module and project wide `*.gradle.kts` files.
+**Whats** - Example for using a kotlin-dsl buildSrc module and project wide `*.gradle.kts` files.
 
-
-**Why?** - When `buildSrc` uses the kotlin-dsl in a project that doesn't has it's downsides.
+**Whys** - When buildSrc uses the kotlin-dsl in a project that doesn't has it's downsides.
 Limited use of the kotlin language features being the most prominent.
 
+**Hows**
+* Created android studio project with library and buildSrc modules.
+* Renamed all gradle files to `*.gradle.kts`.
+* Basic convrrsions *(recommend editing outside android studio for the initial changes)*.
+* Begin...
 
+**Issues**
+* Major lag in errors and their clearing.
+* buildSrc changes require android studio restart to take effect *(very inconvenient)*.
+* ...
+
+**Wants**
+* ...
 
 ## [License][LICENSE]
     Copyright 2018 Jonathan Merritt 11R00TT00R11@GMAIL.COM
