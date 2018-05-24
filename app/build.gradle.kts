@@ -1,4 +1,5 @@
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
+import org.apache.tools.ant.taskdefs.Ant
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -21,7 +22,8 @@ plugins {
 }
 
 android {
-  compileSdkVersion(27)
+  compileSdkVersion("android-P")
+  buildToolsVersion("28.0.0-rc2")
 
   defaultConfig {
     applicationId = "com.github.jonathanmerritt.examplebuildsrckts"
@@ -40,7 +42,7 @@ android {
   }
 
   buildTypes {
-    getByName("release"){
+    getByName("release") {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
     }
@@ -48,8 +50,16 @@ android {
 }
 
 dependencies {
-  implementation("com.android.support:appcompat-v7:27.1.1")
-  testImplementation("junit:junit:4.12")
-  androidTestImplementation("com.android.support.test:runner:1.0.2")
-  androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
+  implementation(appcompat())
+  implementation(viewpager())
+  implementation(coordinatorlayout())
+  implementation(constraintlayout())
+  implementation(constraintlayout_solver())
+
+  implementation(material())
+
+  implementation(rxjava())
+  implementation(rxandroid())
+
+  implementation(kotlin_stdlib_jdk8())
 }

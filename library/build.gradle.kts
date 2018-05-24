@@ -1,3 +1,4 @@
+import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -20,7 +21,8 @@ plugins {
 }
 
 android {
-  compileSdkVersion(27)
+  compileSdkVersion("android-P")
+  buildToolsVersion("28.0.0-rc2")
 
   defaultConfig {
     minSdkVersion(17)
@@ -38,7 +40,7 @@ android {
   }
 
   buildTypes {
-    getByName("release"){
+    getByName("release") {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
     }
@@ -46,8 +48,8 @@ android {
 }
 
 dependencies {
-  implementation("com.android.support:appcompat-v7:27.1.1")
-  testImplementation("junit:junit:4.12")
-  androidTestImplementation("com.android.support.test:runner:1.0.2")
-  androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
+  implementation(rxjava())
+  implementation(rxandroid())
+
+  implementation(kotlin_stdlib_jdk8())
 }
