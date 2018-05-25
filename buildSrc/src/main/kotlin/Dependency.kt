@@ -15,13 +15,15 @@
  */
 
 sealed class Dependency(open val group: String, open val name: String, open val version: String) {
-  open class Type1(override val group: String, override val name: String, override val version: String,
-      val groupName: String = "$group.$name") : Dependency(group, name, version)
 
-  open class Type2(override val group: String, override val name: String,
+  open class Normal(override val group: String, override val name: String,
       override val version: String) : Dependency(group, name, version)
 
-  operator fun invoke() = "${when (this) {is Type1 -> groupName
+  open class Tagged(override val group: String, override val name: String, override val version: String,
+      val group_name: String = "$group.$name") : Dependency(group, name, version)
+
+
+  operator fun invoke() = "${when (this) { is Tagged -> group_name
     else -> group
   }}:$name:$version"
 }

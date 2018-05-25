@@ -14,18 +14,18 @@
  *     limitations under the License.
  */
 
-val appcompat = Dependency.Type1("androidx", "appcompat", "1.0.0-alpha1")
-val viewpager = Dependency.Type1(appcompat.group, "viewpager", appcompat.version)
-val coordinatorlayout = Dependency.Type1(appcompat.group, "coordinatorlayout", appcompat.version)
-val constraintlayout = Dependency.Type1(appcompat.group, "constraintlayout", "1.1.0")
-val constraintlayout_solver = Dependency.Type2(constraintlayout.groupName, "${constraintlayout.name}-solver",
+val appcompat = Dependency.Tagged("androidx", "appcompat", "1.0.0-alpha1")
+val viewpager = Dependency.Tagged(appcompat.group, "viewpager", appcompat.version)
+val coordinatorlayout = Dependency.Tagged(appcompat.group, "coordinatorlayout", appcompat.version)
+val constraintlayout = Dependency.Tagged(appcompat.group, "constraintlayout", "1.1.0")
+val constraintlayout_solver = Dependency.Normal(constraintlayout.group_name, "${constraintlayout.name}-solver",
     constraintlayout.version)
 
-val material = Dependency.Type1("com.google.android", "material", appcompat.version)
+val material = Dependency.Tagged("com.google.android", "material", appcompat.version)
 
-val rxjava = Dependency.Type2("io.reactivex.rxjava2", "rxjava", "2.1.7")
-val rxandroid = Dependency.Type2(rxjava.group, "rxandroid", "2.0.1")
+val rxjava = Dependency.Normal("io.reactivex.rxjava2", "rxjava", "2.1.7")
+val rxandroid = Dependency.Normal(rxjava.group, "rxandroid", "2.0.1")
 
-val kotlin_stdlib_jdk8 = Dependency.Type2("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", "1.2.41")
-val kotlin_gradle_plugin = Dependency.Type2(kotlin_stdlib_jdk8.group, "kotlin-gradle-plugin",
+val kotlin_stdlib_jdk8 = Dependency.Normal("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", "1.2.41")
+val kotlin_gradle_plugin = Dependency.Normal(kotlin_stdlib_jdk8.group, "kotlin-gradle-plugin",
     kotlin_stdlib_jdk8.version)
