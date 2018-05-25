@@ -49,17 +49,17 @@ android {
   }
 }
 
-dependencies {
-  implementation(appcompat())
-  implementation(viewpager())
-  implementation(coordinatorlayout())
-  implementation(constraintlayout())
-  implementation(constraintlayout_solver())
+dependencies(
+    appcompat,
+    viewpager,
+    coordinatorlayout,
+    constraintlayout,
+    constraintlayout_solver,
 
-  implementation(material())
+    material,
 
-  implementation(rxjava())
-  implementation(rxandroid())
+    rxjava,
+    rxandroid,
 
-  implementation(kotlin_stdlib_jdk8())
-}
+    kotlin_stdlib_jdk8
+)

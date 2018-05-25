@@ -47,9 +47,9 @@ android {
   }
 }
 
-dependencies {
-  implementation(rxjava())
-  implementation(rxandroid())
+dependencies(
+    rxjava,
+    rxandroid,
 
-  implementation(kotlin_stdlib_jdk8())
-}
+    kotlin_stdlib_jdk8
+)

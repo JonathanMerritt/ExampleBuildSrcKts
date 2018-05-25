@@ -14,7 +14,6 @@
  *     limitations under the License.
  */
 
-
 val appcompat = Dependency.Type1("androidx", "appcompat", "1.0.0-alpha1")
 val viewpager = Dependency.Type1(appcompat.group, "viewpager", appcompat.version)
 val coordinatorlayout = Dependency.Type1(appcompat.group, "coordinatorlayout", appcompat.version)
