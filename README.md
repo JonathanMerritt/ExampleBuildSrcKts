@@ -15,7 +15,7 @@ Limited use of the kotlin language features being the most prominent.
 
 *issues*
 * Major lag in errors and their clearing. *(multiple java.exes' etc...)*
-* ~~buildSrc changes require android studio restart to take effect *(very inconvenient)*~~.*(change -> clean **not** change -> rebuild)*
+* ~~buildSrc changes require android studio restart to take effect *(very inconvenient)*~~. *(change -> clean **not** change -> rebuild)*
 * ...
 
 **Project**
@@ -28,7 +28,7 @@ Limited use of the kotlin language features being the most prominent.
 *hopes*
 * Feature needs to beable to combine with other features.
 * Add android setup.
-* See about plugins *(bintray/maven/custums)*
+* See about plugins *(bintray/maven/custom)*
 * Try creating tasks and/or plugins to auto write versions, based on data(?) from the maven repo.
 * Figure out a releasing configuration.
 * ...
