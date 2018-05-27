@@ -1,8 +1,8 @@
 ## *ExampleBuildSrcKts*
 
-**Whats** - Example for using a kotlin-dsl buildSrc module and project wide `*.gradle.kts` files.
+**What** - Example for using a kotlin-dsl buildSrc module and project wide `*.gradle.kts` files.
 
-**Whys** - When buildSrc uses the kotlin-dsl in a project that doesn't has it's downsides.
+**Why** - When buildSrc uses the kotlin-dsl in a project that doesn't has it's downsides.
 Limited use of the kotlin language features being the most prominent.
 
 **Hows**
@@ -10,13 +10,26 @@ Limited use of the kotlin language features being the most prominent.
 * Renamed all gradle files to `*.gradle.kts`.
 * Basic convrrsions *(recommend editing outside android studio for the initial changes)*.
 * Begin...
+---
+**Kotlin-Dsl**
 
-**Issues**
-* Major lag in errors and their clearing.
+*issues*
+* Major lag in errors and their clearing. *(multiple java.exes' etc...)*
 * buildSrc changes require android studio restart to take effect *(very inconvenient)*.
 * ...
 
-**Wants**
+**Project**
+
+*issues*
+* Dependency types arnt great.
+* Using objects to store values may be overkill.
+* ...
+
+*hopes*
+* Add android setup.
+* See about plugins *(bintray/maven/custums)*
+* Try creating tasks and/or plugins to auto write versions, based on data(?) from the maven repo.
+* Figure out a releasing configuration.
 * ...
 
 ## [License][LICENSE]
