@@ -15,7 +15,7 @@ Limited use of the kotlin language features being the most prominent.
 
 *issues*
 * Major lag in errors and their clearing. *(multiple java.exes' etc...)*
-* ~~buildSrc changes require android studio restart to take effect *(very inconvenient)*~~. *(change -> clean **not** change -> rebuild)*
+* buildSrc changes require android studio restart to take effect *(very inconvenient)*.
 * ...
 
 **Project**
