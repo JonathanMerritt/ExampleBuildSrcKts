@@ -1,3 +1,8 @@
+import Dependency.Info.Artifact
+import Dependency.Info.Feature
+import Dependency.Info.Group
+import Dependency.Info.Version
+
 /*
  *     Copyright 2018 Jonathan Merritt
  *
@@ -14,18 +19,24 @@
  *     limitations under the License.
  */
 
-val appcompat = Dependency.Tagged("androidx", "appcompat", "1.0.0-alpha1")
-val viewpager = Dependency.Tagged(appcompat.group, "viewpager", appcompat.version)
-val coordinatorlayout = Dependency.Tagged(appcompat.group, "coordinatorlayout", appcompat.version)
-val constraintlayout = Dependency.Tagged(appcompat.group, "constraintlayout", "1.1.0")
-val constraintlayout_solver = Dependency.Normal(constraintlayout.group_name, "${constraintlayout.name}-solver",
-    constraintlayout.version)
+@Suppress("unused")
+object Androidx : Dependency(Group("androidx"), version = Version("1.0.0-alpha1")) {
+  val appcompat = this(Artifact("appcompat", true))
+  val viewpager = this(Artifact("viewpager", true))
+  val coordinatorlayout = this(Artifact("coordinatorlayout", true))
 
-val material = Dependency.Tagged("com.google.android", "material", appcompat.version)
+  val constraintlayout = this(Artifact("constraintlayout", true), Version("1.1.0"))
+  val constraintlayout_solver = constraintlayout(Feature("solver"))
 
-val rxjava = Dependency.Normal("io.reactivex.rxjava2", "rxjava", "2.1.7")
-val rxandroid = Dependency.Normal(rxjava.group, "rxandroid", "2.0.1")
+  val material = this(Group("com.google.android"), Artifact("material", true))
+}
 
-val kotlin_stdlib_jdk8 = Dependency.Normal("org.jetbrains.kotlin", "kotlin-stdlib-jdk8", "1.2.41")
-val kotlin_gradle_plugin = Dependency.Normal(kotlin_stdlib_jdk8.group, "kotlin-gradle-plugin",
-    kotlin_stdlib_jdk8.version)
+val rxjava = Dependency(Group("io.reactivex.rxjava2"), Artifact("rxjava"), version = Version("2.1.7"))
+@Suppress("unused")
+val rxandroid = rxjava(Artifact("rxandroid"), Version("2.0.1"))
+
+@Suppress("unused")
+object Kotlin : Dependency(Group("org.jetbrains"), Artifact("kotlin", true), version = Version("1.2.41")) {
+  val stdlib_jdk8 = this(Feature("stdlib-jdk8"))
+  val gradle_plugin = this(Feature("gradle-plugin"))
+}

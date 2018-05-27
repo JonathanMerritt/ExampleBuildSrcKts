@@ -1,3 +1,5 @@
+import java.nio.file.Files.delete
+
 buildscript {
   repositories {
     google()
@@ -6,7 +8,7 @@ buildscript {
 
   dependencies {
     classpath("com.android.tools.build:gradle:3.2.0-alpha15")
-    classpath(kotlin_gradle_plugin())
+    classpath(Kotlin.gradle_plugin())
   }
 }
 

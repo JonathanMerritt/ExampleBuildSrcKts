@@ -17,7 +17,10 @@ import org.gradle.kotlin.dsl.dependencies
  *     limitations under the License.
  */
 
+fun Project.dependencies(dependency: Dependency) {
+  dependencies { add("implementation", dependency().also { println("$name: $it") }) }
+}
 
 fun Project.dependencies(vararg dependencies: Dependency) {
-  dependencies { for (dependency in dependencies) add("implementation", dependency()) }
+  dependencies { dependencies.forEach { dependencies(it) } }
 }

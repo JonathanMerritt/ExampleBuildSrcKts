@@ -1,3 +1,8 @@
+import Dependency.Info.Artifact
+import Dependency.Info.Feature
+import Dependency.Info.Group
+import Dependency.Info.Version
+
 /*
  *     Copyright 2018 Jonathan Merritt
  *
@@ -14,14 +19,28 @@
  *     limitations under the License.
  */
 
-sealed class Dependency(val group: String, val name: String, val version: String) {
+open class Dependency(private val group: Group = Group(), private val artifact: Artifact = Artifact(),
+    private val feature: Feature = Feature(), private val version: Version = Version()) {
 
-  open class Normal(group: String, name: String, version: String) : Dependency(group, name, version)
+  sealed class Info(private val id: String) {
+    operator fun invoke() = id
+    operator fun not() = id != ""
+    open class Group(id: String = "") : Info(id)
+    open class Artifact(id: String = "", internal val addToGroup: Boolean = false) : Info(id)
+    open class Feature(id: String = "") : Info(id)
+    open class Version(id: String = "") : Info(id)
+  }
 
-  open class Tagged(group: String, name: String, version: String,
-      val group_name: String = "$group.$name") : Dependency(group, name, version)
+  operator fun invoke() = "${group().let { if (artifact.addToGroup) "$it.${artifact()}" else it }}:${artifact()
+      .let { if (!feature) "$it-${feature()}" else it }}:${version()}"
 
-  operator fun invoke() = "${when (this) { is Tagged -> group_name
-    else -> group
-  }}:$name:$version"
+  operator fun invoke(info: Info) = when (info) {
+    is Group -> Dependency(info, artifact, feature, version)
+    is Artifact -> Dependency(group, info, feature, version)
+    is Feature -> Dependency(group, artifact, info, version)
+    is Version -> Dependency(group, artifact, feature, info)
+  }
+
+  operator fun invoke(info: Info, info2: Info) = this(info)(info2)
+  operator fun invoke(info: Info, info2: Info, info3: Info) = this(info, info2)(info3)
 }

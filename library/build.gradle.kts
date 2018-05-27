@@ -51,5 +51,5 @@ dependencies(
     rxjava,
     rxandroid,
 
-    kotlin_stdlib_jdk8
+    Kotlin.stdlib_jdk8
 )

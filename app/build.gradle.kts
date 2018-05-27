@@ -1,5 +1,5 @@
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
-import org.apache.tools.ant.taskdefs.Ant
+import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -50,16 +50,15 @@ android {
 }
 
 dependencies(
-    appcompat,
-    viewpager,
-    coordinatorlayout,
-    constraintlayout,
-    constraintlayout_solver,
-
-    material,
+    Androidx.appcompat,
+    Androidx.viewpager,
+    Androidx.coordinatorlayout,
+    Androidx.constraintlayout,
+    Androidx.constraintlayout_solver,
+    Androidx.material,
 
     rxjava,
     rxandroid,
 
-    kotlin_stdlib_jdk8
+    Kotlin.stdlib_jdk8
 )
