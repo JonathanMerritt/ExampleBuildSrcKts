@@ -28,8 +28,11 @@ open class Dependency(
 
   sealed class Info(val id: String) {
     open class Group(id: String) : Info(id)
-    open class Artifact(id: String, tag: Boolean = false) : Info("${if (tag) ".$id" else ""}:$id")
-    open class Feature(id: String) : Info(if (id.isNotEmpty()) "-$id" else "")
+    open class Artifact(id: String, tag: Boolean = false) : Info((".$id" orEmptyIf tag) + ":$id")
+    open class Feature(id: String) : Info("-$id" orEmptyIf id.isNotEmpty()) {
+      operator fun invoke(id1: String) = Feature(id.trimStart('-') + "-$id1" orEmptyIf id1.isNotEmpty())
+    }
+
     open class Version(id: String) : Info(":$id")
   }
 

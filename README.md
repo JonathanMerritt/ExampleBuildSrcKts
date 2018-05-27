@@ -26,7 +26,7 @@ Limited use of the kotlin language features being the most prominent.
 * ...
 
 *hopes*
-* Feature needs to beable to combine with other features.
+* ~~Feature needs to beable to combine with other features~~.
 * Add android setup.
 * See about plugins *(bintray/maven/custom)*
 * Try creating tasks and/or plugins to auto write versions, based on data(?) from the maven repo.

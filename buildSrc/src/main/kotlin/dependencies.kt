@@ -2,6 +2,10 @@ import Dependency.Info.Artifact
 import Dependency.Info.Feature
 import Dependency.Info.Group
 import Dependency.Info.Version
+import Groups.androidx
+import Versions.constraintlayout
+import Versions.kotlin
+import Versions.rxjava
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -32,13 +36,12 @@ private object Versions {
 }
 
 @Suppress("unused")
-object Androidx : Dependency(Groups.androidx, version = Versions.androidx) {
+object Androidx : Dependency(androidx, version = Versions.androidx) {
   val appcompat = this + Artifact("appcompat", true)
   val viewpager = this + Artifact("viewpager", true)
   val coordinatorlayout = this + Artifact("coordinatorlayout", true)
 
-  object Constraintlayout : Dependency(Groups.androidx, Artifact("constraintlayout", true),
-      version = Versions.constraintlayout) {
+  object Constraintlayout : Dependency(androidx, Artifact("constraintlayout", true), version = constraintlayout) {
     val solver = this + Feature("solver")
   }
 
@@ -46,12 +49,12 @@ object Androidx : Dependency(Groups.androidx, version = Versions.androidx) {
 }
 
 @Suppress("unused")
-object Rxjava : Dependency(Group("io.reactivex.rxjava2"), Artifact("rxjava"), version = Versions.rxjava) {
+object Rxjava : Dependency(Group("io.reactivex.rxjava2"), Artifact("rxjava"), version = rxjava) {
   val rxandroid = this + Artifact("rxandroid") + Versions.rxandroid
 }
 
 @Suppress("unused")
-object Kotlin : Dependency(Group("org.jetbrains"), Artifact("kotlin", true), version = Versions.kotlin) {
-  val stdlib_jdk8 = this + Feature("stdlib-jdk8")
-  val gradle_plugin = this + Feature("gradle-plugin")
+object Kotlin : Dependency(Group("org.jetbrains"), Artifact("kotlin", true), version = kotlin) {
+  val stdlib_jdk8 = this + Feature("stdlib")("jdk8")
+  val gradle_plugin = this + Feature("gradle")("plugin")
 }
