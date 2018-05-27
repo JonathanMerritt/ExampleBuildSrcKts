@@ -49,7 +49,7 @@ android {
   }
 }
 
-dependencies(
+implementations(
     Androidx.appcompat,
     Androidx.viewpager,
     Androidx.coordinatorlayout,

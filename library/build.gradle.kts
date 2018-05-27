@@ -47,7 +47,7 @@ android {
   }
 }
 
-dependencies(
+implementations(
     rxjava,
     rxandroid,
 

@@ -23,12 +23,15 @@ open class Dependency(private val group: Group = Group(), private val artifact: 
     private val feature: Feature = Feature(), private val version: Version = Version()) {
 
   sealed class Info(private val id: String) {
+    companion object {
+      const val ID = ""
+    }
     operator fun invoke() = id
-    operator fun not() = id != ""
-    open class Group(id: String = "") : Info(id)
-    open class Artifact(id: String = "", internal val addToGroup: Boolean = false) : Info(id)
-    open class Feature(id: String = "") : Info(id)
-    open class Version(id: String = "") : Info(id)
+    operator fun not() = id != ID
+    open class Group(id: String = ID) : Info(id)
+    open class Artifact(id: String = ID, internal val addToGroup: Boolean = false) : Info(id)
+    open class Feature(id: String = ID) : Info(id)
+    open class Version(id: String = ID) : Info(id)
   }
 
   operator fun invoke() = "${group().let { if (artifact.addToGroup) "$it.${artifact()}" else it }}:${artifact()
