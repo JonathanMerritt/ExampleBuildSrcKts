@@ -19,24 +19,39 @@ import Dependency.Info.Version
  *     limitations under the License.
  */
 
-@Suppress("unused")
-object Androidx : Dependency(Group("androidx"), version = Version("1.0.0-alpha1")) {
-  val appcompat = this(Artifact("appcompat", true))
-  val viewpager = this(Artifact("viewpager", true))
-  val coordinatorlayout = this(Artifact("coordinatorlayout", true))
-
-  val constraintlayout = this(Artifact("constraintlayout", true), Version("1.1.0"))
-  val constraintlayout_solver = constraintlayout(Feature("solver"))
-
-  val material = this(Group("com.google.android"), Artifact("material", true))
+private object Groups {
+  internal val androidx = Group("androidx")
 }
 
-val rxjava = Dependency(Group("io.reactivex.rxjava2"), Artifact("rxjava"), version = Version("2.1.7"))
-@Suppress("unused")
-val rxandroid = rxjava(Artifact("rxandroid"), Version("2.0.1"))
+private object Versions {
+  internal val androidx = Version("1.0.0-alpha1")
+  internal val constraintlayout = Version("1.1.0")
+  internal val rxjava = Version("2.1.7")
+  internal val rxandroid = Version("2.0.1")
+  internal val kotlin = Version("1.2.41")
+}
 
 @Suppress("unused")
-object Kotlin : Dependency(Group("org.jetbrains"), Artifact("kotlin", true), version = Version("1.2.41")) {
-  val stdlib_jdk8 = this(Feature("stdlib-jdk8"))
-  val gradle_plugin = this(Feature("gradle-plugin"))
+object Androidx : Dependency(Groups.androidx, version = Versions.androidx) {
+  val appcompat = this + Artifact("appcompat", true)
+  val viewpager = this + Artifact("viewpager", true)
+  val coordinatorlayout = this + Artifact("coordinatorlayout", true)
+
+  object Constraintlayout : Dependency(Groups.androidx, Artifact("constraintlayout", true),
+      version = Versions.constraintlayout) {
+    val solver = this + Feature("solver")
+  }
+
+  val material = this + Group("com.google.android") + Artifact("material", true)
+}
+
+@Suppress("unused")
+object Rxjava : Dependency(Group("io.reactivex.rxjava2"), Artifact("rxjava"), version = Versions.rxjava) {
+  val rxandroid = this + Artifact("rxandroid") + Versions.rxandroid
+}
+
+@Suppress("unused")
+object Kotlin : Dependency(Group("org.jetbrains"), Artifact("kotlin", true), version = Versions.kotlin) {
+  val stdlib_jdk8 = this + Feature("stdlib-jdk8")
+  val gradle_plugin = this + Feature("gradle-plugin")
 }

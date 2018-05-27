@@ -48,8 +48,8 @@ android {
 }
 
 implementations(
-    rxjava,
-    rxandroid,
+    Rxjava,
+    Rxjava.rxandroid,
 
     Kotlin.stdlib_jdk8
 )

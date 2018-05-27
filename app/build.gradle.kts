@@ -1,3 +1,4 @@
+import Dependency.Info.Feature
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
 
@@ -53,12 +54,12 @@ implementations(
     Androidx.appcompat,
     Androidx.viewpager,
     Androidx.coordinatorlayout,
-    Androidx.constraintlayout,
-    Androidx.constraintlayout_solver,
+    Androidx.Constraintlayout,
+    Androidx.Constraintlayout.solver,
     Androidx.material,
 
-    rxjava,
-    rxandroid,
+    Rxjava,
+    Rxjava.rxandroid,
 
     Kotlin.stdlib_jdk8
 )

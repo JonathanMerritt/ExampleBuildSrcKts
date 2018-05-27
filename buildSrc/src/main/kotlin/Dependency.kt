@@ -19,31 +19,26 @@ import Dependency.Info.Version
  *     limitations under the License.
  */
 
-open class Dependency(private val group: Group = Group(), private val artifact: Artifact = Artifact(),
-    private val feature: Feature = Feature(), private val version: Version = Version()) {
+open class Dependency(
+    private val group: Group = Group(""),
+    private val artifact: Artifact = Artifact(""),
+    private val feature: Feature = Feature(""),
+    private val version: Version = Version("")
+) {
 
-  sealed class Info(private val id: String) {
-    companion object {
-      const val ID = ""
-    }
-    operator fun invoke() = id
-    operator fun not() = id != ID
-    open class Group(id: String = ID) : Info(id)
-    open class Artifact(id: String = ID, internal val addToGroup: Boolean = false) : Info(id)
-    open class Feature(id: String = ID) : Info(id)
-    open class Version(id: String = ID) : Info(id)
+  sealed class Info(val id: String) {
+    open class Group(id: String) : Info(id)
+    open class Artifact(id: String, tag: Boolean = false) : Info("${if (tag) ".$id" else ""}:$id")
+    open class Feature(id: String) : Info(if (id.isNotEmpty()) "-$id" else "")
+    open class Version(id: String) : Info(":$id")
   }
 
-  operator fun invoke() = "${group().let { if (artifact.addToGroup) "$it.${artifact()}" else it }}:${artifact()
-      .let { if (!feature) "$it-${feature()}" else it }}:${version()}"
+  operator fun invoke() = group.id + artifact.id + feature.id + version.id
 
-  operator fun invoke(info: Info) = when (info) {
-    is Group -> Dependency(info, artifact, feature, version)
-    is Artifact -> Dependency(group, info, feature, version)
-    is Feature -> Dependency(group, artifact, info, version)
-    is Version -> Dependency(group, artifact, feature, info)
+  operator fun plus(it: Info) = when (it) {
+    is Group -> Dependency(it, artifact, feature, version)
+    is Artifact -> Dependency(group, it, feature, version)
+    is Feature -> Dependency(group, artifact, it, version)
+    is Version -> Dependency(group, artifact, feature, it)
   }
-
-  operator fun invoke(info: Info, info2: Info) = this(info)(info2)
-  operator fun invoke(info: Info, info2: Info, info3: Info) = this(info, info2)(info3)
 }
