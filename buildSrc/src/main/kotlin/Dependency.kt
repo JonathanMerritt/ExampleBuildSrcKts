@@ -28,9 +28,6 @@ open class Dependency(
 ) {
 
   sealed class Info(val id: String) {
-    init {
-
-    }
     open class Group(id: String) : Info(id)
     open class Artifact(id: String, tag: Boolean = false) : Info((if (tag) ".$id" else "") + ":$id")
     open class Feature(id: String) : Info(if (id.isNotEmpty()) "-$id" else "") {
