@@ -51,5 +51,5 @@ implementations(
     Rxjava,
     Rxjava.rxandroid,
 
-    Kotlin.stdlib_jdk8
+    Kotlin.stdlib
 )

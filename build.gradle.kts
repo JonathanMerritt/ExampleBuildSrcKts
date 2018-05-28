@@ -8,7 +8,7 @@ buildscript {
 
   dependencies {
     classpath("com.android.tools.build:gradle:3.2.0-alpha15")
-    classpath(Kotlin.gradle_plugin())
+    classpath(Kotlin.gradle())
   }
 }
 

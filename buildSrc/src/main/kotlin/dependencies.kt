@@ -55,6 +55,6 @@ object Rxjava : Dependency(Group("io.reactivex.rxjava2"), Artifact("rxjava"), ve
 
 @Suppress("unused")
 object Kotlin : Dependency(Group("org.jetbrains"), Artifact("kotlin", true), version = kotlin) {
-  val stdlib_jdk8 = this + Feature("stdlib")("jdk8")
-  val gradle_plugin = this + Feature("gradle")("plugin")
+  val stdlib = this + Feature("stdlib")("jdk8")
+  val gradle = this + Feature("gradle")("plugin")
 }
