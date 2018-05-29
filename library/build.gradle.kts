@@ -1,4 +1,4 @@
-import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
+import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -47,9 +47,9 @@ android {
   }
 }
 
-implementations(
-    Rxjava.core,
-    Rxjava.rxandroid,
+dependencies {
+  implementation(Rxjava.core)
+  implementation(Rxjava.rxandroid)
 
-    Kotlin.stdlib
-)
+  implementation(Kotlin.stdlib)
+}
