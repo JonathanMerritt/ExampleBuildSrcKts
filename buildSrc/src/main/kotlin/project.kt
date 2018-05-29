@@ -18,7 +18,7 @@ import org.gradle.kotlin.dsl.dependencies
  */
 
 fun Project.implementations(dependency: Dependency) {
-  dependencies { add("implementation", dependency().also { println("$name implements: $it".toUpperCase()) }) }
+  dependencies { add("implementation", dependency.id.also { println("$name implements: $it".toUpperCase()) }) }
 }
 
 @Suppress("unused")

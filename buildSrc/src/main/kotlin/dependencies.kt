@@ -1,11 +1,6 @@
 import Dependency.Info.Artifact
-import Dependency.Info.Feature
 import Dependency.Info.Group
 import Dependency.Info.Version
-import Groups.androidx
-import Versions.constraintlayout
-import Versions.kotlin
-import Versions.rxjava
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -25,36 +20,50 @@ import Versions.rxjava
 
 private object Groups {
   internal val androidx = Group("androidx")
+  internal val reactivex = Group("io.reactivex.rxjava2")
+  internal val jetbrains = Group("org.jetbrains")
+}
+
+private object Artifacts {
+  internal val constraintlayout = Group.Artifact("constraintlayout")
+  internal val kotlin = Group.Artifact("kotlin")
 }
 
 private object Versions {
-  internal val androidx = Version("1.0.0-alpha1")
+  internal val appcompat = Version("1.0.0-alpha1")
+  internal val viewpager = Version("1.0.0-alpha1")
+  internal val coordinatorlayout = Version("1.0.0-alpha1")
   internal val constraintlayout = Version("1.1.0")
+  internal val material = Version("1.0.0-alpha1")
   internal val rxjava = Version("2.1.7")
   internal val rxandroid = Version("2.0.1")
   internal val kotlin = Version("1.2.41")
 }
 
-@Suppress("unused")
-object Androidx : Dependency(androidx, version = Versions.androidx) {
-  val appcompat = this + Artifact("appcompat", true)
-  val viewpager = this + Artifact("viewpager", true)
-  val coordinatorlayout = this + Artifact("coordinatorlayout", true)
 
-  object Constraintlayout : Dependency(androidx, Artifact("constraintlayout", true), version = constraintlayout) {
-    val solver = this + Feature("solver")
+@Suppress("unused")
+object Androidx {
+  val appcompat = Dependency(Groups.androidx, Group.Artifact("appcompat"), Versions.appcompat)
+  val viewpager = Dependency(Groups.androidx, Group.Artifact("viewpager"), Versions.viewpager)
+  val coordinatorlayout = Dependency(Groups.androidx, Group.Artifact("coordinatorlayout"),
+      Versions.coordinatorlayout)
+
+  object Constraintlayout {
+    val core = Dependency(Groups.androidx, Artifacts.constraintlayout, Versions.constraintlayout)
+    val solver = Dependency(Groups.androidx, Artifacts.constraintlayout("solver"), Versions.constraintlayout)
   }
 
-  val material = this + Group("com.google.android") + Artifact("material", true)
+  val material = Dependency(Group("com.google.android"), Group.Artifact("material"), Versions.material)
 }
 
 @Suppress("unused")
-object Rxjava : Dependency(Group("io.reactivex.rxjava2"), Artifact("rxjava"), version = rxjava) {
-  val rxandroid = this + Artifact("rxandroid") + Versions.rxandroid
+object Rxjava {
+  val core = Dependency(Groups.reactivex, Artifact("rxjava"), Versions.rxjava)
+  val rxandroid = Dependency(Groups.reactivex, Artifact("rxandroid"), Versions.rxandroid)
 }
 
 @Suppress("unused")
-object Kotlin : Dependency(Group("org.jetbrains"), Artifact("kotlin", true), version = kotlin) {
-  val stdlib = this + Feature("stdlib")("jdk8")
-  val gradle = this + Feature("gradle")("plugin")
+object Kotlin {
+  val stdlib = Dependency(Groups.jetbrains, Artifacts.kotlin("stdlib-jdk8"), Versions.kotlin)
+  val gradle = Dependency(Groups.jetbrains, Artifacts.kotlin("gradle-plugin"), Versions.kotlin)
 }

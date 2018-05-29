@@ -48,7 +48,7 @@ android {
 }
 
 implementations(
-    Rxjava,
+    Rxjava.core,
     Rxjava.rxandroid,
 
     Kotlin.stdlib

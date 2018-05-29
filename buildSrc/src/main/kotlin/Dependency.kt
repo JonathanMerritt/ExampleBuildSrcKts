@@ -1,6 +1,4 @@
-
 import Dependency.Info.Artifact
-import Dependency.Info.Feature
 import Dependency.Info.Group
 import Dependency.Info.Version
 
@@ -21,27 +19,30 @@ import Dependency.Info.Version
  */
 
 open class Dependency(
-    private val group: Group = Group(""),
-    private val artifact: Artifact = Artifact(""),
-    private val feature: Feature = Feature(""),
-    private val version: Version = Version("")
+    group: Group = Group("group"),
+    artifact: Artifact = Artifact("artifact"),
+    version: Version = Version("version")
 ) {
 
+  val id = group() + artifact() + version()
+
   sealed class Info(val id: String) {
-    open class Group(id: String) : Info(id)
-    open class Artifact(id: String, tag: Boolean = false) : Info((if (tag) ".$id" else "") + ":$id")
-    open class Feature(id: String) : Info(if (id.isNotEmpty()) "-$id" else "") {
-      operator fun invoke(id: String) = Feature(this.id.trimStart('-') + "-$id")
+    open operator fun invoke() = id
+    open class Group(id: String) : Info(id) {
+
+      open class Artifact(id: String) : Info.Artifact(id) {
+        override fun invoke() = ".$id" + super.invoke()
+      }
     }
+
+    open class Artifact(id: String) : Info(id) {
+      override fun invoke() = ":$id"
+
+      operator fun invoke(id: String) = object : Artifact(id) {
+        override fun invoke() = this@Artifact() + "-$id"
+      }
+    }
+
     open class Version(id: String) : Info(":$id")
-  }
-
-  operator fun invoke() = group.id + artifact.id + feature.id + version.id
-
-  operator fun plus(info: Info) = when (info) {
-    is Group -> Dependency(info, artifact, feature, version)
-    is Artifact -> Dependency(group, info, feature, version)
-    is Feature -> Dependency(group, artifact, info, version)
-    is Version -> Dependency(group, artifact, feature, info)
   }
 }
