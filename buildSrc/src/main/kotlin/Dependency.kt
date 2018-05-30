@@ -1,6 +1,5 @@
 import Dependency.Info.Artifact
 import Dependency.Info.Group
-import Dependency.Info.Version
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -18,28 +17,31 @@ import Dependency.Info.Version
  *     limitations under the License.
  */
 
-open class Dependency(
-    group: Group = Group("group"),
-    artifact: Artifact = Artifact("artifact"),
-    version: Version = Version("version")
-) {
+@Suppress("unused")
+data class Dependency(private val group: Group, private val artifact: Artifact) {
 
-  val id = group() + artifact() + version()
+  operator fun invoke() = group.id() + artifact.id() + artifact.version.id()
+  operator fun invoke(artifactId: String) = Dependency(group, artifact(artifactId))
 
-  sealed class Info(val id: String) {
-    open operator fun invoke() = id
-    open class Group(id: String) : Info(id) {
+  sealed class Info(private val id: String) {
+    open fun id() = id
 
-      open class Artifact(id: String) : Info.Artifact(id) {
-        override fun invoke() = ".$id" + super.invoke()
+    open class Group(id: String, private val artifact: Info.Artifact? = null) : Info(id) {
+
+      operator fun invoke() = this(artifact!!)
+      operator fun invoke(artifactId: String) = this(artifact!!(artifactId))
+      operator fun invoke(artifact: Info.Artifact) = Dependency(this, artifact)
+
+      open class Artifact(private val id: String, version: Version) : Info.Artifact(id, version) {
+        override fun id() = ".$id" + super.id()
       }
     }
 
-    open class Artifact(id: String) : Info(id) {
-      override fun invoke() = ":$id"
+    open class Artifact(private val id: String, val version: Version) : Info(id) {
+      override fun id() = ":$id"
 
-      operator fun invoke(id: String) = object : Artifact(id) {
-        override fun invoke() = this@Artifact() + "-$id"
+      operator fun invoke(id: String, version: Version = this.version) = object : Artifact(id, version) {
+        override fun id() = this@Artifact.id() + "-$id"
       }
     }
 
