@@ -19,32 +19,31 @@ import Dependency.Info.Group
 
 @Suppress("unused")
 data class Dependency(private val group: Group, private val artifact: Artifact) {
-
-  operator fun invoke() = group.id() + artifact.id() + artifact.version.id()
-  operator fun invoke(artifactId: String) = Dependency(group, artifact(artifactId))
+  operator fun invoke() = group.pathId() + artifact.pathId() + artifact.version.pathId()
+  operator fun invoke(artifact: Artifact) = group(artifact)
+  operator fun invoke(artifactId: String) = this(artifact(artifactId))
 
   sealed class Info(private val id: String) {
-    open fun id() = id
+    open fun pathId() = ":$id"
 
-    open class Group(id: String, private val artifact: Info.Artifact? = null) : Info(id) {
+    open class Group(private val id: String, private val artifact: Info.Artifact? = null) : Info(id) {
+      override fun pathId() = id
 
-      operator fun invoke() = this(artifact!!)
-      operator fun invoke(artifactId: String) = this(artifact!!(artifactId))
       operator fun invoke(artifact: Info.Artifact) = Dependency(this, artifact)
+      operator fun invoke(artifactId: String) = this(artifact!!(artifactId))
+      operator fun invoke() = this(artifact!!)
 
       open class Artifact(private val id: String, version: Version) : Info.Artifact(id, version) {
-        override fun id() = ".$id" + super.id()
+        override fun pathId() = ".$id" + super.pathId()
       }
     }
 
-    open class Artifact(private val id: String, val version: Version) : Info(id) {
-      override fun id() = ":$id"
-
+    open class Artifact(id: String, val version: Version) : Info(id) {
       operator fun invoke(id: String, version: Version = this.version) = object : Artifact(id, version) {
-        override fun id() = this@Artifact.id() + "-$id"
+        override fun pathId() = this@Artifact.pathId() + "-$id"
       }
     }
 
-    open class Version(id: String) : Info(":$id")
+    open class Version(id: String) : Info(id)
   }
 }

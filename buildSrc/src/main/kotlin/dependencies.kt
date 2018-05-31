@@ -41,9 +41,9 @@ object Androidx : Group("androidx") {
   val viewpager = this(Group.Artifact("viewpager", Versions.viewpager))
   val coordinatorlayout = this(Group.Artifact("coordinatorlayout", Versions.coordinatorlayout))
 
-  object Constraintlayout {
-    val core = Androidx(Group.Artifact("constraintlayout", Versions.constraintlayout))
-    val solver = core("solver")
+  object Constraintlayout : Group.Artifact("constraintlayout", Versions.constraintlayout) {
+    val core = Androidx(this)
+    val solver = Androidx(this("solver"))
   }
 }
 

@@ -1,4 +1,3 @@
-import Androidx.Constraintlayout
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 
 /*
@@ -54,8 +53,8 @@ dependencies {
   implementation(Androidx.viewpager())
   implementation(Androidx.coordinatorlayout())
 
-  implementation(Constraintlayout.core())
-  implementation(Constraintlayout.solver())
+  implementation(Androidx.Constraintlayout.core())
+  implementation(Androidx.Constraintlayout.solver())
 
   implementation(Google.material())
 
