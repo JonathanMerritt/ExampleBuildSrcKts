@@ -1,4 +1,4 @@
-import Dependency.Info
+import Dependency.Info.Artifact.Type.GROUP
 import Dependency.Info.Group
 import Dependency.Info.Version
 
@@ -32,16 +32,16 @@ private object Versions {
 
 @Suppress("unused")
 object Android : Group("com.android.tools.build") {
-  val gradle = this(Info.Artifact("gradle", Versions.gradle))
+  val gradle = this(Artifact("gradle", Versions.gradle))
 }
 
 @Suppress("unused")
 object Androidx : Group("androidx") {
-  val appcompat = this(Group.Artifact("appcompat", Versions.appcompat))
-  val viewpager = this(Group.Artifact("viewpager", Versions.viewpager))
-  val coordinatorlayout = this(Group.Artifact("coordinatorlayout", Versions.coordinatorlayout))
+  val appcompat = this(Artifact("appcompat", Versions.appcompat, GROUP))
+  val viewpager = this(Artifact("viewpager", Versions.viewpager, GROUP))
+  val coordinatorlayout = this(Artifact("coordinatorlayout", Versions.coordinatorlayout, GROUP))
 
-  object Constraintlayout : Group.Artifact("constraintlayout", Versions.constraintlayout) {
+  object Constraintlayout : Artifact("constraintlayout", Versions.constraintlayout, GROUP) {
     val core = Androidx(this)
     val solver = Androidx(this("solver"))
   }
@@ -49,17 +49,17 @@ object Androidx : Group("androidx") {
 
 @Suppress("unused")
 object Google : Group("com.google.android") {
-  val material = this(Group.Artifact("material", Versions.material))
+  val material = this(Artifact("material", Versions.material, GROUP))
 }
 
 @Suppress("unused")
 object Rxjava : Group("io.reactivex.rxjava2") {
-  val core = this(Info.Artifact("rxjava", Versions.rxjava))
-  val rxandroid = this(Info.Artifact("rxandroid", Versions.rxandroid))
+  val core = this(Artifact("rxjava", Versions.rxjava))
+  val rxandroid = this(Artifact("rxandroid", Versions.rxandroid))
 }
 
 @Suppress("unused")
-object Kotlin : Group("org.jetbrains", Group.Artifact("kotlin", Versions.kotlin)) {
+object Kotlin : Group("org.jetbrains", Artifact("kotlin", Versions.kotlin, GROUP)) {
   val stdlib = this("stdlib-jdk8")
   val gradle = this("gradle-plugin")
 }

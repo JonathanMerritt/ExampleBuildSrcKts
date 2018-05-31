@@ -1,4 +1,7 @@
 import Dependency.Info.Artifact
+import Dependency.Info.Artifact.Type.FEATURE
+import Dependency.Info.Artifact.Type.GROUP
+import Dependency.Info.Artifact.Type.NORMAL
 import Dependency.Info.Group
 
 /*
@@ -19,31 +22,34 @@ import Dependency.Info.Group
 
 @Suppress("unused")
 data class Dependency(private val group: Group, private val artifact: Artifact) {
-  operator fun invoke() = group.pathId() + artifact.pathId() + artifact.version.pathId()
   operator fun invoke(artifact: Artifact) = group(artifact)
-  operator fun invoke(artifactId: String) = this(artifact(artifactId))
+  operator fun invoke() = group.path() + artifact.path() + artifact.version.path()
 
   sealed class Info(private val id: String) {
-    open fun pathId() = ":$id"
+    open fun path() = when (this) {
+      is Group -> id
+      else -> ":$id"
+    }
 
-    open class Group(private val id: String, private val artifact: Info.Artifact? = null) : Info(id) {
-      override fun pathId() = id
-
+    open class Group(id: String, private val artifact: Info.Artifact? = null) : Info(id) {
       operator fun invoke(artifact: Info.Artifact) = Dependency(this, artifact)
       operator fun invoke(artifactId: String) = this(artifact!!(artifactId))
       operator fun invoke() = this(artifact!!)
-
-      open class Artifact(private val id: String, version: Version) : Info.Artifact(id, version) {
-        override fun pathId() = ".$id" + super.pathId()
-      }
     }
 
-    open class Artifact(id: String, val version: Version) : Info(id) {
-      operator fun invoke(id: String, version: Version = this.version) = object : Artifact(id, version) {
-        override fun pathId() = this@Artifact.pathId() + "-$id"
+    open class Artifact(private val id: String, val version: Version, private val type: Type = NORMAL) : Info(id) {
+      enum class Type { NORMAL, GROUP, FEATURE }
+
+      override fun path() = when (type) {
+        GROUP -> ".$id" + super.path()
+        FEATURE -> id
+        else -> super.path()
       }
+
+      operator fun invoke(id: String, version: Version = this.version) = Artifact(path() + "-$id", version,
+          FEATURE)
     }
 
-    open class Version(id: String) : Info(id)
+    class Version(id: String) : Info(id)
   }
 }
