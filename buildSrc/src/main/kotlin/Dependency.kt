@@ -1,7 +1,6 @@
 import Dependency.Info.Artifact
-import Dependency.Info.Artifact.Type.FEATURE
-import Dependency.Info.Artifact.Type.GROUP
-import Dependency.Info.Artifact.Type.NORMAL
+import Dependency.Info.Artifact.Normal
+import Dependency.Info.Artifact.Tagged
 import Dependency.Info.Group
 
 /*
@@ -21,35 +20,49 @@ import Dependency.Info.Group
  */
 
 @Suppress("unused")
-data class Dependency(private val group: Group, private val artifact: Artifact) {
-  operator fun invoke(artifact: Artifact) = group(artifact)
-  operator fun invoke() = group.path() + artifact.path() + artifact.version.path()
+data class Dependency(private val group: Group, private val artifact: Artifact? = group.artifact) : ToString {
+  override fun invoke() = "${group()}${artifact.orEmpty()}"
 
-  sealed class Info(private val id: String) {
-    open fun path() = when (this) {
-      is Group -> id
-      else -> ":$id"
+  sealed class Info(private val id: String) : ToString {
+    override fun invoke() = id
+
+    open class Group(id: String, val artifact: Artifact? = null) : Info(id) {
+      fun add(artifact: Artifact? = this.artifact) = Dependency(this, artifact)
+      fun addNormal(id: String, versionId: String) = add(Normal(id, versionId))
+      fun addTagged(id: String, versionId: String) = add(Tagged(id, versionId))
+      fun addFeature(id: String): Dependency = add(artifact!!.feature(id))
     }
 
-    open class Group(id: String, private val artifact: Info.Artifact? = null) : Info(id) {
-      operator fun invoke(artifact: Info.Artifact) = Dependency(this, artifact)
-      operator fun invoke(artifactId: String) = this(artifact!!(artifactId))
-      operator fun invoke() = this(artifact!!)
-    }
+    sealed class Artifact(private val id: String, private val versionId: String = "",
+        private val version: Version = Version(versionId), private val feature: Feature? = null) : Info(id) {
+      override fun invoke() = when (this) {
+        is Normal -> ":$id"
+        is Tagged -> ".${id.trimFeatures()}:$id"
+      } + feature.orEmpty() + version()
 
-    open class Artifact(private val id: String, val version: Version, private val type: Type = NORMAL) : Info(id) {
-      enum class Type { NORMAL, GROUP, FEATURE }
 
-      override fun path() = when (type) {
-        GROUP -> ".$id" + super.path()
-        FEATURE -> id
-        else -> super.path()
+      fun feature(id: String, versionId: String = this.versionId) = Feature(id).let {
+        when (this) {
+          is Normal -> Normal(this.id + feature.orEmpty(), versionId, it)
+          is Tagged -> Tagged(this.id + feature.orEmpty(), versionId, it)
+        }
       }
 
-      operator fun invoke(id: String, version: Version = this.version) = Artifact(path() + "-$id", version,
-          FEATURE)
+      open class Normal(id: String, versionId: String, feature: Feature? = null) : Artifact(id, versionId,
+          feature = feature)
+
+      open class Tagged(id: String, versionId: String, feature: Feature? = null) : Artifact(id, versionId,
+          feature = feature) {
+        fun String.trimFeatures() = indexOf("-").let { if (it > 0) removeRange(it, length) else this }
+      }
     }
 
-    class Version(id: String) : Info(id)
+    class Feature internal constructor(id: String) : Info(id) {
+      override fun invoke() = "-${super.invoke()}"
+    }
+
+    class Version internal constructor(id: String) : Info(id) {
+      override fun invoke() = ":${super.invoke()}"
+    }
   }
 }

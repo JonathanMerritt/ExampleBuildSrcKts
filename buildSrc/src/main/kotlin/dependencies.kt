@@ -1,6 +1,5 @@
-import Dependency.Info.Artifact.Type.GROUP
+import Dependency.Info.Artifact.Tagged
 import Dependency.Info.Group
-import Dependency.Info.Version
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -18,48 +17,36 @@ import Dependency.Info.Version
  *     limitations under the License.
  */
 
-private object Versions {
-  internal val gradle = Version("3.2.0-alpha16")
-  internal val appcompat = Version("1.0.0-alpha1")
-  internal val viewpager = Version("1.0.0-alpha1")
-  internal val coordinatorlayout = Version("1.0.0-alpha1")
-  internal val constraintlayout = Version("1.1.0")
-  internal val material = Version("1.0.0-alpha1")
-  internal val rxjava = Version("2.1.7")
-  internal val rxandroid = Version("2.0.1")
-  internal val kotlin = Version("1.2.41")
-}
-
 @Suppress("unused")
 object Android : Group("com.android.tools.build") {
-  val gradle = this(Artifact("gradle", Versions.gradle))
+  val gradle = addNormal("gradle", "3.2.0-alpha16")
 }
 
 @Suppress("unused")
 object Androidx : Group("androidx") {
-  val appcompat = this(Artifact("appcompat", Versions.appcompat, GROUP))
-  val viewpager = this(Artifact("viewpager", Versions.viewpager, GROUP))
-  val coordinatorlayout = this(Artifact("coordinatorlayout", Versions.coordinatorlayout, GROUP))
+  val appcompat = addTagged("appcompat", "1.0.0-alpha1")
+  val viewpager = addTagged("viewpager", "1.0.0-alpha1")
+  val coordinatorlayout = addTagged("coordinatorlayout", "1.0.0-alpha1")
 
-  object Constraintlayout : Artifact("constraintlayout", Versions.constraintlayout, GROUP) {
-    val core = Androidx(this)
-    val solver = Androidx(this("solver"))
+  object Constraintlayout : Tagged("constraintlayout", "1.1.0") {
+    val core = add(this)
+    val solver = add(feature("solver"))
   }
 }
 
 @Suppress("unused")
 object Google : Group("com.google.android") {
-  val material = this(Artifact("material", Versions.material, GROUP))
+  val material = addTagged("material", "1.0.0-alpha1")
 }
 
 @Suppress("unused")
 object Rxjava : Group("io.reactivex.rxjava2") {
-  val core = this(Artifact("rxjava", Versions.rxjava))
-  val rxandroid = this(Artifact("rxandroid", Versions.rxandroid))
+  val core = addNormal("rxjava", "2.1.7")
+  val rxandroid = addNormal("rxandroid", "2.0.1")
 }
 
 @Suppress("unused")
-object Kotlin : Group("org.jetbrains", Artifact("kotlin", Versions.kotlin, GROUP)) {
-  val stdlib = this("stdlib-jdk8")
-  val gradle = this("gradle-plugin")
+object Kotlin : Group("org.jetbrains", Tagged("kotlin", "1.2.41")) {
+  val stdlib = addFeature("stdlib-jdk8")
+  val gradle = addFeature("gradle-plugin")
 }
