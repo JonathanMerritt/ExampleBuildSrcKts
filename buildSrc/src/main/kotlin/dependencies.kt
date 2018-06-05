@@ -36,7 +36,7 @@ object Androidx : Grouping("androidx", {
       tagged("viewpager", "1.0.0-alpha1"),
       tagged("coordinatorlayout", "1.0.0-alpha1"),
       constraintlayout,
-      constraintlayout.feature("solver"))
+      constraintlayout("solver"))
 })
 
 @Suppress("unused")
@@ -49,8 +49,8 @@ object Google : Grouping("com.google.android", {
 object Kotlin : Grouping("org.jetbrains", {
   val kotlin = tagged("kotlin", "1.2.41")
   listOf(
-      kotlin.feature(STDLIB_JDK8),
-      kotlin.feature(GRADLE_PLUGIN))
+      kotlin(STDLIB_JDK8),
+      kotlin(GRADLE_PLUGIN))
 }) {
   const val GRADLE_PLUGIN = "gradle-plugin"
   const val STDLIB_JDK8 = "stdlib-jdk8"

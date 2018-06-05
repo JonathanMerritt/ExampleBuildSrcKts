@@ -1,4 +1,3 @@
-
 import Dependency.Info.Artifact
 import Dependency.Info.Artifact.Normal
 import Dependency.Info.Artifact.Tagged
@@ -28,42 +27,36 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
     override fun invoke() = id
     fun id() = id
 
-    class Group internal constructor(id: String) : Info(id) {
-      fun normal(id: String, version: String, feature: String = "") = Normal(id, version, feature)
-      fun tagged(id: String, version: String, feature: String = "") = Tagged(id, version, feature)
-    }
+    class Group internal constructor(id: String) : Info(id)
 
     sealed class Artifact(private val id: String, private val version: Version,
-        private val feature: Feature? = null) : Info(id) {
+        private val feature: Feature = Feature("")) : Info(id) {
       override fun invoke() = when (this) {
         is Normal -> ":$id"
         is Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:$id"
-      } + feature.orEmpty() + version()
+      } + feature() + version()
 
-      fun featureId() = feature?.id() ?: ""
+      fun tag() = feature.id().run { if (isEmpty()) id else this }
 
-      fun feature(id: String, version: String = ""): Artifact {
-        val artifact = this.id + feature.orEmpty()
-        val versionId = if (version.isEmpty()) this.version.id() else version
-        return when (this) {
-          is Normal -> Normal(artifact, versionId, id)
-          is Tagged -> Tagged(artifact, versionId, id)
-        }
-      }
+      operator fun invoke(id: String, version: String = this.version.id()) =
+          when (this) {
+            is Normal -> Normal(this.id + this.feature(), version, id)
+            is Tagged -> Tagged(this.id + this.feature(), version, id)
+          }
 
       class Normal internal constructor(id: String, version: String, feature: String = "") : Artifact(id,
-          Version(version), if (feature.isEmpty()) null else Feature(feature))
+          Version(version), Feature(feature))
 
       class Tagged internal constructor(id: String, version: String, feature: String = "") : Artifact(id,
-          Version(version), if (feature.isEmpty()) null else Feature(feature))
+          Version(version), Feature(feature))
     }
 
     class Feature internal constructor(id: String) : Info(id) {
-      override fun invoke() = "-${super.invoke()}"
+      override fun invoke() = super.invoke().run { if (isEmpty()) "" else "-$this" }
     }
 
     class Version internal constructor(id: String) : Info(id) {
-      override fun invoke() = ":${super.invoke()}"
+      override fun invoke() = super.invoke().run { if (isEmpty()) "" else ":$this" }
     }
   }
 
@@ -74,11 +67,7 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
     operator fun invoke(key: String) = dependencies[key]!!
 
     init {
-      apply {
-        artifacts(this).forEach {
-          dependencies[it.featureId().run { if (isEmpty()) it.id() else this }] = Dependency(Group(groupId), it)
-        }
-      }
+      apply { artifacts(this).forEach { dependencies[it.tag()] = Dependency(Group(groupId), it) } }
     }
 
     fun normal(id: String, version: String, feature: String = "") = Normal(id, version, feature)

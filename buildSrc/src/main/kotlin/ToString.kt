@@ -16,5 +16,4 @@
 
 interface ToString {
   operator fun invoke() = ""
-  fun ToString?.orEmpty() = this?.invoke() ?: ""
 }
