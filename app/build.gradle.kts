@@ -1,4 +1,6 @@
+import Kotlin.STDLIB_JDK8
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
+import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -49,17 +51,11 @@ android {
 }
 
 dependencies {
-  implementation(Androidx.appcompat())
-  implementation(Androidx.viewpager())
-  implementation(Androidx.coordinatorlayout())
+  Androidx { implementation(it()) }
 
-  implementation(Androidx.Constraintlayout.core())
-  implementation(Androidx.Constraintlayout.solver())
+  Google { implementation(it()) }
 
-  implementation(Google.material())
+  Rxjava { implementation(it()) }
 
-  implementation(Rxjava.core())
-  implementation(Rxjava.rxandroid())
-
-  implementation(Kotlin.stdlib())
+  implementation(Kotlin(STDLIB_JDK8)())
 }

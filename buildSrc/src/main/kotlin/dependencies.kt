@@ -1,5 +1,8 @@
-import Dependency.Info.Artifact.Tagged
-import Dependency.Info.Group
+
+import Android.GRADLE
+import Dependency.Grouping
+import Kotlin.GRADLE_PLUGIN
+import Kotlin.STDLIB_JDK8
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -18,35 +21,44 @@ import Dependency.Info.Group
  */
 
 @Suppress("unused")
-object Android : Group("com.android.tools.build") {
-  val gradle = addNormal("gradle", "3.2.0-alpha16")
+object Android : Grouping("com.android.tools.build", {
+  listOf(
+      normal(GRADLE, "3.2.0-alpha16"))
+}) {
+  const val GRADLE = "gradle"
 }
 
 @Suppress("unused")
-object Androidx : Group("androidx") {
-  val appcompat = addTagged("appcompat", "1.0.0-alpha1")
-  val viewpager = addTagged("viewpager", "1.0.0-alpha1")
-  val coordinatorlayout = addTagged("coordinatorlayout", "1.0.0-alpha1")
+object Androidx : Grouping("androidx", {
+  val constraintlayout = tagged("constraintlayout", "1.1.0")
+  listOf(
+      tagged("appcompat", "1.0.0-alpha1"),
+      tagged("viewpager", "1.0.0-alpha1"),
+      tagged("coordinatorlayout", "1.0.0-alpha1"),
+      constraintlayout,
+      constraintlayout.feature("solver"))
+})
 
-  object Constraintlayout : Tagged("constraintlayout", "1.1.0") {
-    val core = add(this)
-    val solver = add(feature("solver"))
-  }
+@Suppress("unused")
+object Google : Grouping("com.google.android", {
+  listOf(
+      tagged("material", "1.0.0-alpha1"))
+})
+
+@Suppress("unused")
+object Kotlin : Grouping("org.jetbrains", {
+  val kotlin = tagged("kotlin", "1.2.41")
+  listOf(
+      kotlin.feature(STDLIB_JDK8),
+      kotlin.feature(GRADLE_PLUGIN))
+}) {
+  const val GRADLE_PLUGIN = "gradle-plugin"
+  const val STDLIB_JDK8 = "stdlib-jdk8"
 }
 
 @Suppress("unused")
-object Google : Group("com.google.android") {
-  val material = addTagged("material", "1.0.0-alpha1")
-}
-
-@Suppress("unused")
-object Rxjava : Group("io.reactivex.rxjava2") {
-  val core = addNormal("rxjava", "2.1.7")
-  val rxandroid = addNormal("rxandroid", "2.0.1")
-}
-
-@Suppress("unused")
-object Kotlin : Group("org.jetbrains", Tagged("kotlin", "1.2.41")) {
-  val stdlib = addFeature("stdlib-jdk8")
-  val gradle = addFeature("gradle-plugin")
-}
+object Rxjava : Grouping("io.reactivex.rxjava2", {
+  listOf(
+      normal("rxjava", "2.1.7"),
+      normal("rxandroid", "2.0.1"))
+})

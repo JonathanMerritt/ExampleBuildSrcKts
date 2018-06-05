@@ -1,3 +1,4 @@
+import Kotlin.STDLIB_JDK8
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 import org.gradle.internal.impldep.com.amazonaws.PredefinedClientConfigurations.defaultConfig
 
@@ -49,8 +50,7 @@ android {
 }
 
 dependencies {
-  implementation(Rxjava.core())
-  implementation(Rxjava.rxandroid())
+  Rxjava { implementation(it()) }
 
-  implementation(Kotlin.stdlib())
+  implementation(Kotlin(STDLIB_JDK8)())
 }

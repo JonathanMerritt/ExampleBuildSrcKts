@@ -1,3 +1,4 @@
+
 import Dependency.Info.Artifact
 import Dependency.Info.Artifact.Normal
 import Dependency.Info.Artifact.Tagged
@@ -20,41 +21,41 @@ import Dependency.Info.Group
  */
 
 @Suppress("unused")
-data class Dependency(private val group: Group, private val artifact: Artifact? = group.artifact) : ToString {
-  override fun invoke() = "${group()}${artifact.orEmpty()}"
+data class Dependency(private val group: Group, private val artifact: Artifact) : ToString {
+  override fun invoke() = "${group()}${artifact()}"
 
   sealed class Info(private val id: String) : ToString {
     override fun invoke() = id
+    fun id() = id
 
-    open class Group(id: String, val artifact: Artifact? = null) : Info(id) {
-      fun add(artifact: Artifact? = this.artifact) = Dependency(this, artifact)
-      fun addNormal(id: String, versionId: String) = add(Normal(id, versionId))
-      fun addTagged(id: String, versionId: String) = add(Tagged(id, versionId))
-      fun addFeature(id: String): Dependency = add(artifact!!.feature(id))
+    class Group internal constructor(id: String) : Info(id) {
+      fun normal(id: String, version: String, feature: String = "") = Normal(id, version, feature)
+      fun tagged(id: String, version: String, feature: String = "") = Tagged(id, version, feature)
     }
 
-    sealed class Artifact(private val id: String, private val versionId: String = "",
-        private val version: Version = Version(versionId), private val feature: Feature? = null) : Info(id) {
+    sealed class Artifact(private val id: String, private val version: Version,
+        private val feature: Feature? = null) : Info(id) {
       override fun invoke() = when (this) {
         is Normal -> ":$id"
-        is Tagged -> ".${id.trimFeatures()}:$id"
+        is Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:$id"
       } + feature.orEmpty() + version()
 
+      fun featureId() = feature?.id() ?: ""
 
-      fun feature(id: String, versionId: String = this.versionId) = Feature(id).let {
-        when (this) {
-          is Normal -> Normal(this.id + feature.orEmpty(), versionId, it)
-          is Tagged -> Tagged(this.id + feature.orEmpty(), versionId, it)
+      fun feature(id: String, version: String = ""): Artifact {
+        val artifact = this.id + feature.orEmpty()
+        val versionId = if (version.isEmpty()) this.version.id() else version
+        return when (this) {
+          is Normal -> Normal(artifact, versionId, id)
+          is Tagged -> Tagged(artifact, versionId, id)
         }
       }
 
-      open class Normal(id: String, versionId: String, feature: Feature? = null) : Artifact(id, versionId,
-          feature = feature)
+      class Normal internal constructor(id: String, version: String, feature: String = "") : Artifact(id,
+          Version(version), if (feature.isEmpty()) null else Feature(feature))
 
-      open class Tagged(id: String, versionId: String, feature: Feature? = null) : Artifact(id, versionId,
-          feature = feature) {
-        fun String.trimFeatures() = indexOf("-").let { if (it > 0) removeRange(it, length) else this }
-      }
+      class Tagged internal constructor(id: String, version: String, feature: String = "") : Artifact(id,
+          Version(version), if (feature.isEmpty()) null else Feature(feature))
     }
 
     class Feature internal constructor(id: String) : Info(id) {
@@ -64,5 +65,23 @@ data class Dependency(private val group: Group, private val artifact: Artifact? 
     class Version internal constructor(id: String) : Info(id) {
       override fun invoke() = ":${super.invoke()}"
     }
+  }
+
+  open class Grouping(groupId: String, artifacts: Grouping.() -> List<Artifact>) {
+    private val dependencies: HashMap<String, Dependency> = hashMapOf()
+
+    operator fun invoke(each: (Dependency) -> Unit) = dependencies.forEach { each(it.value) }
+    operator fun invoke(key: String) = dependencies[key]!!
+
+    init {
+      apply {
+        artifacts(this).forEach {
+          dependencies[it.featureId().run { if (isEmpty()) it.id() else this }] = Dependency(Group(groupId), it)
+        }
+      }
+    }
+
+    fun normal(id: String, version: String, feature: String = "") = Normal(id, version, feature)
+    fun tagged(id: String, version: String, feature: String = "") = Tagged(id, version, feature)
   }
 }
