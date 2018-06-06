@@ -1,6 +1,6 @@
 
 import Android.GRADLE
-import Dependency.Grouping
+import Dependency.Grouping.With
 import Kotlin.GRADLE_PLUGIN
 import Kotlin.STDLIB_JDK8
 
@@ -21,7 +21,7 @@ import Kotlin.STDLIB_JDK8
  */
 
 @Suppress("unused")
-object Android : Grouping("com.android.tools.build", {
+object Android : With("com.android.tools.build", {
   listOf(
       normal(GRADLE, "3.2.0-alpha16"))
 }) {
@@ -29,7 +29,7 @@ object Android : Grouping("com.android.tools.build", {
 }
 
 @Suppress("unused")
-object Androidx : Grouping("androidx", {
+object Androidx : With("androidx", {
   val constraintlayout = tagged("constraintlayout", "1.1.0")
   listOf(
       tagged("appcompat", "1.0.0-alpha1"),
@@ -40,13 +40,13 @@ object Androidx : Grouping("androidx", {
 })
 
 @Suppress("unused")
-object Google : Grouping("com.google.android", {
+object Google : With("com.google.android", {
   listOf(
       tagged("material", "1.0.0-alpha1"))
 })
 
 @Suppress("unused")
-object Kotlin : Grouping("org.jetbrains", {
+object Kotlin : With("org.jetbrains", {
   val kotlin = tagged("kotlin", "1.2.41")
   listOf(
       kotlin(STDLIB_JDK8),
@@ -57,7 +57,7 @@ object Kotlin : Grouping("org.jetbrains", {
 }
 
 @Suppress("unused")
-object Rxjava : Grouping("io.reactivex.rxjava2", {
+object Rxjava : With("io.reactivex.rxjava2", {
   listOf(
       normal("rxjava", "2.1.7"),
       normal("rxandroid", "2.0.1"))

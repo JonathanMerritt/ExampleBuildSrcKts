@@ -49,28 +49,47 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
 
       class Tagged internal constructor(id: String, version: String, feature: String = "") : Artifact(id,
           Version(version), Feature(feature))
-    }
 
-    class Feature internal constructor(id: String) : Info(id) {
-      override fun invoke() = super.invoke().run { if (isEmpty()) "" else "-$this" }
-    }
 
-    class Version internal constructor(id: String) : Info(id) {
-      override fun invoke() = super.invoke().run { if (isEmpty()) "" else ":$this" }
+      class Feature internal constructor(id: String) : Info(id) {
+        override fun invoke() = super.invoke().run { if (isEmpty()) "" else "-$this" }
+      }
+
+      class Version internal constructor(id: String) : Info(id) {
+        override fun invoke() = super.invoke().run { if (isEmpty()) "" else ":$this" }
+      }
     }
   }
 
-  open class Grouping(groupId: String, artifacts: Grouping.() -> List<Artifact>) {
+  sealed class Grouping {
     private val dependencies: HashMap<String, Dependency> = hashMapOf()
 
     operator fun invoke(each: (Dependency) -> Unit) = dependencies.forEach { each(it.value) }
     operator fun invoke(key: String) = dependencies[key]!!
 
-    init {
-      apply { artifacts(this).forEach { dependencies[it.tag()] = Dependency(Group(groupId), it) } }
+    protected fun add(id: String, artifact: Artifact) {
+      dependencies[artifact.tag()] = Dependency(Group(id), artifact)
     }
 
     fun normal(id: String, version: String, feature: String = "") = Normal(id, version, feature)
     fun tagged(id: String, version: String, feature: String = "") = Tagged(id, version, feature)
+
+    fun addNormal(group: String, artifact: String, version: String, feature: String = "") = normal(artifact,
+        version, feature).also { add(group, it) }
+
+    fun addTagged(group: String, artifact: String, version: String, feature: String = "") = tagged(artifact,
+        version, feature).also { add(group, it) }
+
+    open class With(groupId: String, artifacts: With.() -> List<Artifact>) : Grouping() {
+      init {
+        apply { artifacts(this).forEach { add(groupId, it) } }
+      }
+    }
+
+    open class Without(init: Without.() -> Unit) : Grouping() {
+      init {
+        apply { init(this) }
+      }
+    }
   }
 }
