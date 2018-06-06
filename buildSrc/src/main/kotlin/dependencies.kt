@@ -20,7 +20,6 @@ import Kotlin.STDLIB_JDK8
  *     limitations under the License.
  */
 
-@Suppress("unused")
 object Android : With("com.android.tools.build", {
   listOf(
       normal(GRADLE, "3.2.0-alpha16"))
@@ -28,7 +27,6 @@ object Android : With("com.android.tools.build", {
   const val GRADLE = "gradle"
 }
 
-@Suppress("unused")
 object Androidx : With("androidx", {
   val constraintlayout = tagged("constraintlayout", "1.1.0")
   listOf(
@@ -39,24 +37,21 @@ object Androidx : With("androidx", {
       constraintlayout("solver"))
 })
 
-@Suppress("unused")
 object Google : With("com.google.android", {
   listOf(
       tagged("material", "1.0.0-alpha1"))
 })
 
-@Suppress("unused")
 object Kotlin : With("org.jetbrains", {
   val kotlin = tagged("kotlin", "1.2.41")
   listOf(
-      kotlin(STDLIB_JDK8),
-      kotlin(GRADLE_PLUGIN))
+      kotlin(GRADLE_PLUGIN),
+      kotlin(STDLIB_JDK8))
 }) {
   const val GRADLE_PLUGIN = "gradle-plugin"
   const val STDLIB_JDK8 = "stdlib-jdk8"
 }
 
-@Suppress("unused")
 object Rxjava : With("io.reactivex.rxjava2", {
   listOf(
       normal("rxjava", "2.1.7"),
