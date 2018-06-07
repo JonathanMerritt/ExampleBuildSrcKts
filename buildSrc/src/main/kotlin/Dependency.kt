@@ -74,21 +74,15 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
     fun normal(id: String, version: String, feature: String = "") = Normal(id, version, feature)
     fun tagged(id: String, version: String, feature: String = "") = Tagged(id, version, feature)
 
-    fun addNormal(group: String, artifact: String, version: String, feature: String = "") = normal(artifact,
-        version, feature).also { add(group, it) }
-
-    fun addTagged(group: String, artifact: String, version: String, feature: String = "") = tagged(artifact,
-        version, feature).also { add(group, it) }
-
-    open class With(groupId: String, artifacts: With.() -> List<Artifact>) : Grouping() {
+    open class With(private val groupId: String, artifacts: With.() -> List<Artifact>) : Grouping() {
       init {
         apply { artifacts(this).forEach { add(groupId, it) } }
       }
-    }
 
-    open class Without(init: Without.() -> Unit) : Grouping() {
-      init {
-        apply { init(this) }
+      open class Without(init: Without.() -> Unit) : Grouping() {
+        init {
+          apply { init(this) }
+        }
       }
     }
   }

@@ -22,24 +22,24 @@ import Kotlin.STDLIB_JDK8
 
 object Android : With("com.android.tools.build", {
   listOf(
-      normal(GRADLE, "3.2.0-alpha16"))
+      normal(GRADLE, "3.2.0-alpha17"))
 }) {
   const val GRADLE = "gradle"
 }
 
 object Androidx : With("androidx", {
-  val constraintlayout = tagged("constraintlayout", "1.1.0")
+  val constraintlayout = tagged("constraintlayout", "1.1.1")
   listOf(
-      tagged("appcompat", "1.0.0-alpha1"),
-      tagged("viewpager", "1.0.0-alpha1"),
-      tagged("coordinatorlayout", "1.0.0-alpha1"),
+      tagged("appcompat", "1.0.0-alpha3"),
+      tagged("viewpager", "1.0.0-alpha3"),
+      tagged("coordinatorlayout", "1.0.0-alpha3"),
       constraintlayout,
       constraintlayout("solver"))
 })
 
 object Google : With("com.google.android", {
   listOf(
-      tagged("material", "1.0.0-alpha1"))
+      tagged("material", "1.0.0-alpha3"))
 })
 
 object Kotlin : With("org.jetbrains", {
