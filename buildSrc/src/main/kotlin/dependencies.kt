@@ -1,8 +1,4 @@
-
-import Android.GRADLE
-import Dependency.Grouping.With
-import Kotlin.GRADLE_PLUGIN
-import Kotlin.STDLIB_JDK8
+import Dependency.Grouping
 
 /*
  *     Copyright 2018 Jonathan Merritt
@@ -20,40 +16,34 @@ import Kotlin.STDLIB_JDK8
  *     limitations under the License.
  */
 
-object Android : With("com.android.tools.build", {
-  listOf(
-      normal(GRADLE, "3.2.0-alpha17"))
-}) {
-  const val GRADLE = "gradle"
-}
+object AndroidTools : Grouping("com.android.tools.build", {
+  normal("gradle", "3.2.0-alpha17").add()
+})
 
-object Androidx : With("androidx", {
+object Androidx : Grouping("androidx", {
+  tagged("appcompat", "1.0.0-alpha3").add()
+  tagged("viewpager", "1.0.0-alpha3").add()
+  tagged("coordinatorlayout", "1.0.0-alpha3").add()
+
   val constraintlayout = tagged("constraintlayout", "1.1.1")
-  listOf(
-      tagged("appcompat", "1.0.0-alpha3"),
-      tagged("viewpager", "1.0.0-alpha3"),
-      tagged("coordinatorlayout", "1.0.0-alpha3"),
-      constraintlayout,
-      constraintlayout("solver"))
+  constraintlayout.add()
+  constraintlayout("solver").add()
 })
 
-object Google : With("com.google.android", {
-  listOf(
-      tagged("material", "1.0.0-alpha3"))
+object Google : Grouping("com.google.android", {
+  tagged("material", "1.0.0-alpha3").add()
 })
 
-object Kotlin : With("org.jetbrains", {
-  val kotlin = tagged("kotlin", "1.2.41")
-  listOf(
-      kotlin(GRADLE_PLUGIN),
-      kotlin(STDLIB_JDK8))
-}) {
-  const val GRADLE_PLUGIN = "gradle-plugin"
-  const val STDLIB_JDK8 = "stdlib-jdk8"
+object Kotlin : Grouping("org.jetbrains") {
+  private val artifact = tagged("kotlin", "1.2.41")
+  val gradle_plugin = artifact("gradle-plugin").dependency()
+
+  init {
+    artifact("stdlib-jdk8").add()
+  }
 }
 
-object Rxjava : With("io.reactivex.rxjava2", {
-  listOf(
-      normal("rxjava", "2.1.7"),
-      normal("rxandroid", "2.0.1"))
+object Rxjava : Grouping("io.reactivex.rxjava2", {
+  normal("rxjava", "2.1.7").add()
+  normal("rxandroid", "2.0.1").add()
 })

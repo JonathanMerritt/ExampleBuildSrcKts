@@ -61,29 +61,20 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
     }
   }
 
-  sealed class Grouping {
+  open class Grouping(private val groupId: String = "", init: Grouping.() -> Unit = { }) {
     private val dependencies: HashMap<String, Dependency> = hashMapOf()
 
-    operator fun invoke(each: (Dependency) -> Unit) = dependencies.forEach { each(it.value) }
-    operator fun invoke(key: String) = dependencies[key]!!
+    operator fun invoke(dependency: (Dependency) -> Unit) = dependencies.forEach { dependency(it.value) }
+    operator fun invoke(artifact: String) = dependencies[artifact]!!
 
-    protected fun add(id: String, artifact: Artifact) {
-      dependencies[artifact.tag()] = Dependency(Group(id), artifact)
+    init {
+      apply { init(this) }
     }
 
-    fun normal(id: String, version: String, feature: String = "") = Normal(id, version, feature)
-    fun tagged(id: String, version: String, feature: String = "") = Tagged(id, version, feature)
+    fun Artifact.dependency(group: String = groupId) = Dependency(Group(group), this)
+    fun Artifact.add(group: String = groupId) = dependency(group).also { dependencies[tag()] = it }
 
-    open class With(groupId: String, artifacts: With.() -> List<Artifact>) : Grouping() {
-      init {
-        apply { artifacts(this).forEach { add(groupId, it) } }
-      }
-    }
-
-    open class Without(init: Without.() -> Unit) : Grouping() {
-      init {
-        apply { init(this) }
-      }
-    }
+    fun normal(artifact: String, version: String, feature: String = "") = Normal(artifact, version, feature)
+    fun tagged(artifact: String, version: String, feature: String = "") = Tagged(artifact, version, feature)
   }
 }

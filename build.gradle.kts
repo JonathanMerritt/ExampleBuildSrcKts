@@ -7,8 +7,9 @@ buildscript {
   }
 
   dependencies {
-    classpath(Android(Android.GRADLE)())
-    classpath(Kotlin(Kotlin.GRADLE_PLUGIN)())
+    AndroidTools { classpath(it()) }
+
+    classpath(Kotlin.gradle_plugin())
   }
 }
 
