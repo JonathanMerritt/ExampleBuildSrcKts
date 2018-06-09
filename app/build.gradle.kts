@@ -22,13 +22,13 @@ plugins {
 }
 
 android {
-  compileSdkVersion("android-P")
-  buildToolsVersion("28.0.0-rc2")
+  compileSdkVersion(28)
+  buildToolsVersion("28.0.0")
 
   defaultConfig {
     applicationId = "com.github.jonathanmerritt.examplebuildsrckts"
     minSdkVersion(17)
-    targetSdkVersion(27)
+    targetSdkVersion(28)
     versionCode = 1
     versionName = "1.0"
 
