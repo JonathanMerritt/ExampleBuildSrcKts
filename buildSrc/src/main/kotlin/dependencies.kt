@@ -16,33 +16,38 @@ import Dependency.Grouping
  *     limitations under the License.
  */
 
+@Suppress("unused")
 object AndroidTools : Grouping("com.android.tools.build", {
-  normal("gradle", "3.2.0-alpha17").add()
+  this + normal("gradle", "3.2.0-alpha17")
 })
 
+@Suppress("unused")
 object Androidx : Grouping("androidx", {
-  tagged("appcompat", "1.0.0-alpha3").add()
-  tagged("viewpager", "1.0.0-alpha3").add()
-  tagged("coordinatorlayout", "1.0.0-alpha3").add()
+  this + tagged("appcompat", "1.0.0-alpha3")
+  this + tagged("viewpager", "1.0.0-alpha3")
+  this + tagged("coordinatorlayout", "1.0.0-alpha3")
 
-  val constraintlayout = tagged("constraintlayout", "1.1.1").add()
-  constraintlayout.artifact()("solver").add()
+  val constraintlayout = this + tagged("constraintlayout", "1.1.1")
+  this + constraintlayout.artifact()("solver")
 })
 
+@Suppress("unused")
 object Google : Grouping("com.google.android", {
-  tagged("material", "1.0.0-alpha3").add()
+  this + tagged("material", "1.0.0-alpha3")
 })
 
+@Suppress("unused")
 object Kotlin : Grouping("org.jetbrains") {
   private val artifact = tagged("kotlin", "1.2.41")
-  val gradle_plugin = artifact("gradle-plugin").dependency()
+  val gradle_plugin = this(artifact("gradle-plugin"))
 
   init {
-    artifact("stdlib-jdk8").add()
+    this + artifact("stdlib-jdk8")
   }
 }
 
+@Suppress("unused")
 object Rxjava : Grouping("io.reactivex.rxjava2", {
-  normal("rxjava", "2.1.7").add()
-  normal("rxandroid", "2.0.1").add()
+  this + normal("rxjava", "2.1.7")
+  this + normal("rxandroid", "2.0.1")
 })

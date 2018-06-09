@@ -19,19 +19,18 @@ import Dependency.Info.Group
  *     limitations under the License.
  */
 
+@Suppress("unused")
 data class Dependency(private val group: Group, private val artifact: Artifact) {
+
   operator fun invoke() = group().path() + artifact().path() + artifact().feature().path() + artifact().version().path()
 
   fun group() = group
-
   fun artifact() = artifact
 
   sealed class Info(private val id: String) {
+
     fun id() = id
-
-    fun empty() = id.isEmpty()
-
-    fun path() = if (empty()) "" else when (this) {
+    fun path() = if (id.isEmpty()) "" else when (this) {
       is Group -> ""
       is Artifact.Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:"
       is Artifact.Feature -> "-"
@@ -40,48 +39,49 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
 
     class Group internal constructor(id: String) : Info(id)
 
-    sealed class Artifact(id: String, private val version: Version,
-        private val feature: Feature = Feature("")) : Info(id) {
+    sealed class Artifact(id: String, private val version: Version, private val feature: Feature = Feature(""))
+      : Info(id) {
 
       fun feature() = feature
-
       fun version() = version
 
-      operator fun invoke(featureId: String, versionId: String = version().id()): Artifact = when (this) {
+      internal operator fun invoke(featureId: String, versionId: String = version().id()): Artifact = when (this) {
         is Normal -> Normal(id() + feature().path(), versionId, featureId)
         is Tagged -> Tagged(id() + feature().path(), versionId, featureId)
       }
 
-      class Normal internal constructor(id: String, versionId: String, featureId: String = "") : Artifact(id,
-          Version(versionId), Feature(featureId))
+      class Normal internal constructor(id: String, versionId: String, featureId: String = "")
+        : Artifact(id, Version(versionId), Feature(featureId))
 
-      class Tagged internal constructor(id: String, versionId: String, featureId: String = "") : Artifact(id,
-          Version(versionId), Feature(featureId))
+      class Tagged internal constructor(id: String, versionId: String, featureId: String = "")
+        : Artifact(id, Version(versionId), Feature(featureId))
 
       class Feature internal constructor(id: String) : Info(id)
-
       class Version internal constructor(id: String) : Info(id)
     }
   }
 
-  open class Grouping(private val groupId: String = "", init: Grouping.() -> Unit = { }) {
-    private val dependencies: HashMap<String, Dependency> = hashMapOf()
-
-    operator fun invoke(dependency: (Dependency) -> Unit) = dependencies.forEach { dependency(it.value) }
-    operator fun invoke(artifactId: String) = dependencies[artifactId]!!
+  open class Grouping(groupId: String = "", init: Grouping.() -> Unit = { },
+      private val group: Group = Group(groupId),
+      private val dependencies: HashMap<String, Dependency> = hashMapOf()) {
 
     init {
       apply { init(this) }
     }
 
-    fun Artifact.dependency(groupId: String = this@Grouping.groupId) = Dependency(Group(groupId), this)
-    fun Artifact.add(groupId: String = this@Grouping.groupId) = dependency(
-        groupId).also { dependencies[feature().run { if (empty()) this@add.id() else id() }] = it }
+    operator fun invoke(dependency: (Dependency) -> Unit) = dependencies.forEach { dependency(it.value) }
+    operator fun invoke(artifactId: String) = dependencies[artifactId]!!
 
-    fun normal(artifactId: String, versionId: String, featureId: String = "") = Normal(artifactId, versionId,
-        featureId)
+    internal operator fun invoke(artifact: Artifact) = artifact.make(group.id())
+    internal operator fun plus(artifact: Artifact) = artifact.plus(group.id())
+    internal fun Artifact.make(groupId: String) = Dependency(Group(groupId), this)
+    internal fun Artifact.plus(groupId: String) = make(groupId).also {
+      dependencies[feature().id().let { if (it.isEmpty()) id() else it }] = it }
 
-    fun tagged(artifactId: String, versionId: String, featureId: String = "") = Tagged(artifactId, versionId,
-        featureId)
+    internal fun normal(artifactId: String, versionId: String, featureId: String = "") =
+        Normal(artifactId, versionId, featureId)
+
+    internal fun tagged(artifactId: String, versionId: String, featureId: String = "") =
+        Tagged(artifactId, versionId, featureId)
   }
 }
