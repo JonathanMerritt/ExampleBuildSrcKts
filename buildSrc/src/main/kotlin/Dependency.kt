@@ -19,25 +19,37 @@ import Dependency.Info.Group
  *     limitations under the License.
  */
 
-data class Dependency(val group: Group, val artifact: Artifact) {
-  operator fun invoke() = group.path() + artifact.path() + artifact.feature.path() + artifact.version.path()
+data class Dependency(private val group: Group, private val artifact: Artifact) {
+  operator fun invoke() = group().path() + artifact().path() + artifact().feature().path() + artifact().version().path()
 
-  sealed class Info(internal val id: String) {
-    fun path() = if (id.isEmpty()) "" else when (this) {
-      is Group -> id
-      is Artifact.Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:$id"
-      is Artifact.Feature -> "-$id"
-      else -> ":$id"
-    }
+  fun group() = group
+
+  fun artifact() = artifact
+
+  sealed class Info(private val id: String) {
+    fun id() = id
+
+    fun empty() = id.isEmpty()
+
+    fun path() = if (empty()) "" else when (this) {
+      is Group -> ""
+      is Artifact.Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:"
+      is Artifact.Feature -> "-"
+      else -> ":"
+    } + id
 
     class Group internal constructor(id: String) : Info(id)
 
-    sealed class Artifact(id: String, internal val version: Version,
-        internal val feature: Feature = Feature("")) : Info(id) {
+    sealed class Artifact(id: String, private val version: Version,
+        private val feature: Feature = Feature("")) : Info(id) {
 
-      operator fun invoke(featureId: String, versionId: String = version.id): Artifact = when (this) {
-        is Normal -> Normal(id + feature.path(), versionId, featureId)
-        is Tagged -> Tagged(id + feature.path(), versionId, featureId)
+      fun feature() = feature
+
+      fun version() = version
+
+      operator fun invoke(featureId: String, versionId: String = version().id()): Artifact = when (this) {
+        is Normal -> Normal(id() + feature().path(), versionId, featureId)
+        is Tagged -> Tagged(id() + feature().path(), versionId, featureId)
       }
 
       class Normal internal constructor(id: String, versionId: String, featureId: String = "") : Artifact(id,
@@ -64,7 +76,7 @@ data class Dependency(val group: Group, val artifact: Artifact) {
 
     fun Artifact.dependency(groupId: String = this@Grouping.groupId) = Dependency(Group(groupId), this)
     fun Artifact.add(groupId: String = this@Grouping.groupId) = dependency(
-        groupId).also { dependencies[feature.id.run { if (isEmpty()) id else this }] = it }
+        groupId).also { dependencies[feature().run { if (empty()) this@add.id() else id() }] = it }
 
     fun normal(artifactId: String, versionId: String, featureId: String = "") = Normal(artifactId, versionId,
         featureId)

@@ -26,7 +26,7 @@ object Androidx : Grouping("androidx", {
   tagged("coordinatorlayout", "1.0.0-alpha3").add()
 
   val constraintlayout = tagged("constraintlayout", "1.1.1").add()
-  constraintlayout.artifact("solver").add()
+  constraintlayout.artifact()("solver").add()
 })
 
 object Google : Grouping("com.google.android", {
