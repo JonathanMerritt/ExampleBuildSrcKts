@@ -19,22 +19,21 @@ import Dependency.Info.Group
  *     limitations under the License.
  */
 
-data class Dependency(private val group: Group, private val artifact: Artifact) {
-  operator fun invoke() = group + artifact
+data class Dependency(val group: Group, val artifact: Artifact) {
+  operator fun invoke() = group.path() + artifact.path() + artifact.feature.path() + artifact.version.path()
 
-  sealed class Info(val id: String) {
-    open fun path() = id
-    operator fun plus(info: Info) = path() + info.path()
+  sealed class Info(internal val id: String) {
+    fun path() = if (id.isEmpty()) "" else when (this) {
+      is Group -> id
+      is Artifact.Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:$id"
+      is Artifact.Feature -> "-$id"
+      else -> ":$id"
+    }
 
     class Group internal constructor(id: String) : Info(id)
 
-    sealed class Artifact(id: String, private val version: Version, val feature: Feature = Feature("")) : Info(
-        id) {
-
-      override fun path() = when (this) {
-        is Normal -> ":$id"
-        is Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:$id"
-      } + (feature + version)
+    sealed class Artifact(id: String, internal val version: Version,
+        internal val feature: Feature = Feature("")) : Info(id) {
 
       operator fun invoke(featureId: String, versionId: String = version.id): Artifact = when (this) {
         is Normal -> Normal(id + feature.path(), versionId, featureId)
@@ -47,14 +46,9 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
       class Tagged internal constructor(id: String, versionId: String, featureId: String = "") : Artifact(id,
           Version(versionId), Feature(featureId))
 
+      class Feature internal constructor(id: String) : Info(id)
 
-      class Feature internal constructor(id: String) : Info(id) {
-        override fun path() = super.path().run { if (isEmpty()) "" else "-$this" }
-      }
-
-      class Version internal constructor(id: String) : Info(id) {
-        override fun path() = super.path().run { if (isEmpty()) "" else ":$this" }
-      }
+      class Version internal constructor(id: String) : Info(id)
     }
   }
 
