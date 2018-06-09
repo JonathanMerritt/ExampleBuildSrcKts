@@ -72,11 +72,14 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
     operator fun invoke(dependency: (Dependency) -> Unit) = dependencies.forEach { dependency(it.value) }
     operator fun invoke(artifactId: String) = dependencies[artifactId]!!
 
-    internal operator fun invoke(artifact: Artifact) = artifact.make(group.id())
-    internal operator fun plus(artifact: Artifact) = artifact.plus(group.id())
-    internal fun Artifact.make(groupId: String) = Dependency(Group(groupId), this)
-    internal fun Artifact.plus(groupId: String) = make(groupId).also {
-      dependencies[feature().id().let { if (it.isEmpty()) id() else it }] = it }
+    internal operator fun invoke(artifact: Artifact) = artifact.make()
+    internal operator fun plus(artifact: Artifact) = artifact.plus()
+    internal fun Artifact.make(groupId: String = "") = Dependency(
+        groupId.run { if (isEmpty()) group else Group(this) }, this)
+
+    internal fun Artifact.plus(groupId: String = "") = make(groupId).also {
+      dependencies[feature().id().let { if (it.isEmpty()) id() else it }] = it
+    }
 
     internal fun normal(artifactId: String, versionId: String, featureId: String = "") =
         Normal(artifactId, versionId, featureId)
