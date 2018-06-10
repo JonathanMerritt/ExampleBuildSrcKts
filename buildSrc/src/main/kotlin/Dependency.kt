@@ -1,4 +1,5 @@
 import Dependency.Info.Artifact
+import Dependency.Info.Artifact.Feature
 import Dependency.Info.Artifact.Normal
 import Dependency.Info.Artifact.Tagged
 import Dependency.Info.Group
@@ -32,8 +33,8 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
     fun id() = id
     fun path() = if (id.isEmpty()) "" else when (this) {
       is Group -> ""
-      is Artifact.Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:"
-      is Artifact.Feature -> "-"
+      is Tagged -> ".${id.run { indexOf("-").let { if (it > 0) removeRange(it, length) else this } }}:"
+      is Feature -> "-"
       else -> ":"
     } + id
 
