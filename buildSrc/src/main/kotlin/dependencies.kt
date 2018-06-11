@@ -28,7 +28,7 @@ object Androidx : Grouping("androidx") {
   val coordinatorlayout = this(tagged("coordinatorlayout", "1.0.0-alpha3"))
 
   val constraintlayout = this(tagged("constraintlayout", "1.1.1"))
-  val constraintlayout_solver = this(constraintlayout("solver"))
+  val constraintlayout_solver = this(constraintlayout.artifact("solver"))
 }
 
 @Suppress("unused")
