@@ -24,6 +24,8 @@ import Dependency.Info.Group
 data class Dependency(private val group: Group, private val artifact: Artifact) {
 
   operator fun invoke() = group().path() + artifact().path() + artifact().feature().path() + artifact().version().path()
+  internal operator fun invoke(featureId: String, versionId: String = artifact.version().id()) = artifact(
+      featureId, versionId)
 
   fun group() = group
   fun artifact() = artifact
@@ -62,25 +64,11 @@ data class Dependency(private val group: Group, private val artifact: Artifact) 
     }
   }
 
-  open class Grouping(groupId: String = "", init: Grouping.() -> Unit = { },
-      private val group: Group = Group(groupId),
-      private val dependencies: HashMap<String, Dependency> = hashMapOf()) {
-
-    init {
-      apply { init(this) }
-    }
-
-    operator fun invoke(dependency: (Dependency) -> Unit) = dependencies.forEach { dependency(it.value) }
-    operator fun invoke(artifactId: String) = dependencies[artifactId]!!
+  open class Grouping(groupId: String = "", private val group: Group = Group(groupId)) {
 
     internal operator fun invoke(artifact: Artifact) = artifact.make()
-    internal operator fun plus(artifact: Artifact) = artifact.plus()
     internal fun Artifact.make(groupId: String = "") = Dependency(
         groupId.run { if (isEmpty()) group else Group(this) }, this)
-
-    internal fun Artifact.plus(groupId: String = "") = make(groupId).also {
-      dependencies[feature().id().let { if (it.isEmpty()) id() else it }] = it
-    }
 
     internal fun normal(artifactId: String, versionId: String, featureId: String = "") =
         Normal(artifactId, versionId, featureId)

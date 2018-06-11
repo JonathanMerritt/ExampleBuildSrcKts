@@ -49,7 +49,8 @@ android {
 }
 
 dependencies {
-  Rxjava { implementation(it()) }
+  implementation(Rxjava2.rxjava())
+  implementation(Rxjava2.rxandroid())
 
-  Kotlin { implementation(it()) }
+  implementation(Jetbrains.kotlin_stdlib_jdk8())
 }

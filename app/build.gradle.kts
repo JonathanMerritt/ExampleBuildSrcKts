@@ -50,11 +50,14 @@ android {
 }
 
 dependencies {
-  Androidx { implementation(it()) }
+  implementation(Androidx.appcompat())
+  implementation(Androidx.viewpager())
+  implementation(Androidx.coordinatorlayout())
+  implementation(Androidx.constraintlayout())
+  implementation(Androidx.constraintlayout_solver())
 
-  Google { implementation(it()) }
+  implementation(Rxjava2.rxjava())
+  implementation(Rxjava2.rxandroid())
 
-  Rxjava { implementation(it()) }
-
-  Kotlin { implementation(it()) }
+  implementation(Jetbrains.kotlin_stdlib_jdk8())
 }

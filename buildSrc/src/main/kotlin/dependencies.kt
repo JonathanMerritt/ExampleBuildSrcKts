@@ -17,37 +17,34 @@ import Dependency.Grouping
  */
 
 @Suppress("unused")
-object AndroidTools : Grouping("com.android.tools.build", {
-  this + normal("gradle", "3.2.0-alpha17")
-})
-
-@Suppress("unused")
-object Androidx : Grouping("androidx", {
-  this + tagged("appcompat", "1.0.0-alpha3")
-  this + tagged("viewpager", "1.0.0-alpha3")
-  this + tagged("coordinatorlayout", "1.0.0-alpha3")
-
-  val constraintlayout = this + tagged("constraintlayout", "1.1.1")
-  this + constraintlayout.artifact()("solver")
-})
-
-@Suppress("unused")
-object Google : Grouping("com.google.android", {
-  this + tagged("material", "1.0.0-alpha3")
-})
-
-@Suppress("unused")
-object Kotlin : Grouping("org.jetbrains") {
-  private val artifact = tagged("kotlin", "1.2.41")
-  val gradle_plugin = this(artifact("gradle-plugin"))
-
-  init {
-    this + artifact("stdlib-jdk8")
-  }
+object Tools : Grouping("com.android.tools.build") {
+  val gradle = this(normal("gradle", "3.2.0-alpha17"))
 }
 
 @Suppress("unused")
-object Rxjava : Grouping("io.reactivex.rxjava2", {
-  this + normal("rxjava", "2.1.7")
-  this + normal("rxandroid", "2.0.1")
-})
+object Androidx : Grouping("androidx") {
+  val appcompat = this(tagged("appcompat", "1.0.0-alpha3"))
+  val viewpager = this(tagged("viewpager", "1.0.0-alpha3"))
+  val coordinatorlayout = this(tagged("coordinatorlayout", "1.0.0-alpha3"))
+
+  val constraintlayout = this(tagged("constraintlayout", "1.1.1"))
+  val constraintlayout_solver = this(constraintlayout("solver"))
+}
+
+@Suppress("unused")
+object Google : Grouping("com.google.android") {
+  val material = this(tagged("material", "1.0.0-alpha3"))
+}
+
+@Suppress("unused")
+object Jetbrains : Grouping("org.jetbrains") {
+  private val kotlin = tagged("kotlin", "1.2.41")
+  val kotlin_gradle_plugin = this(kotlin("gradle-plugin"))
+  val kotlin_stdlib_jdk8 = this(kotlin("stdlib-jdk8"))
+}
+
+@Suppress("unused")
+object Rxjava2 : Grouping("io.reactivex.rxjava2") {
+  val rxjava = this(normal("rxjava", "2.1.7"))
+  val rxandroid = this(normal("rxandroid", "2.0.1"))
+}
