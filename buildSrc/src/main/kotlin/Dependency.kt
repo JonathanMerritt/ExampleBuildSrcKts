@@ -36,16 +36,18 @@ data class Dependency(val group: Group, val artifact: Artifact) {
 
     class Group internal constructor(id: String) : Info(id)
     sealed class Artifact(id: String, val version: Version, val feature: Feature = Feature("")) : Info(id) {
-      internal operator fun invoke(featureId: String, versionId: String = version.id): Artifact = when (this) {
-        is Normal -> Normal(id + feature.path, versionId, featureId)
-        is Tagged -> Tagged(id + feature.path, versionId, featureId)
+      internal operator fun invoke(featureId: String, versionId: String = ""): Artifact = when (this) {
+        is Normal -> Normal(id + feature.path,
+            versionId.run { if (versionId.isEmpty()) version.id else versionId }, featureId)
+        is Tagged -> Tagged(id + feature.path,
+            versionId.run { if (versionId.isEmpty()) version.id else versionId }, featureId)
       }
 
-      class Normal internal constructor(id: String, versionId: String, featureId: String = "")
-        : Artifact(id, Version(versionId), Feature(featureId))
+      class Normal internal constructor(id: String, versionId: String, featureId: String = "") : Artifact(id,
+          Version(versionId), Feature(featureId))
 
-      class Tagged internal constructor(id: String, versionId: String, featureId: String = "")
-        : Artifact(id, Version(versionId), Feature(featureId))
+      class Tagged internal constructor(id: String, versionId: String, featureId: String = "") : Artifact(id,
+          Version(versionId), Feature(featureId))
 
       class Feature internal constructor(id: String) : Info(id)
       class Version internal constructor(id: String) : Info(id)
@@ -53,14 +55,16 @@ data class Dependency(val group: Group, val artifact: Artifact) {
   }
 
   open class Grouping(groupId: String = "", private val group: Group = Group(groupId)) {
-    internal operator fun invoke(artifact: Artifact) = artifact.make()
-    internal fun Artifact.make(groupId: String = "") = Dependency(
-        groupId.run { if (isEmpty()) group else Group(this) }, this)
-
     internal fun normal(artifactId: String, versionId: String, featureId: String = "") =
-        Normal(artifactId, versionId, featureId)
+        Normal(artifactId, versionId, featureId).asDependency()
 
     internal fun tagged(artifactId: String, versionId: String, featureId: String = "") =
-        Tagged(artifactId, versionId, featureId)
+        Tagged(artifactId, versionId, featureId).asDependency()
+
+    internal operator fun Dependency.invoke(featureId: String, versionId: String = "") = artifact(featureId,
+        versionId).asDependency()
+
+    internal fun Artifact.asDependency(groupId: String = "") = Dependency(
+        groupId.run { if (isEmpty()) group else Group(this) }, this)
   }
 }
