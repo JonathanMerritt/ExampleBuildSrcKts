@@ -55,6 +55,8 @@ data class Dependency(val group: Group, val artifact: Artifact) {
   }
 
   open class Grouping(groupId: String = "", private val group: Group = Group(groupId)) {
+    constructor(grouping: Grouping, groupId: String = "") : this(group = Group("${grouping.group.id}.$groupId"))
+
     internal fun normal(artifactId: String, versionId: String, featureId: String = "") =
         Normal(artifactId, versionId, featureId).asDependency()
 

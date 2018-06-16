@@ -1,4 +1,3 @@
-
 import Dependency.Grouping
 
 /*
@@ -18,34 +17,36 @@ import Dependency.Grouping
  */
 
 @Suppress("unused")
-object Tools : Grouping("com.android.tools.build") {
-  val gradle = normal("gradle", "3.2.0-alpha17")
-}
-
-@Suppress("unused")
 object Androidx : Grouping("androidx") {
   val appcompat = tagged("appcompat", "1.0.0-alpha3")
   val viewpager = tagged("viewpager", "1.0.0-alpha3")
   val coordinatorlayout = tagged("coordinatorlayout", "1.0.0-alpha3")
 
-  val constraintlayout = tagged("constraintlayout", "1.1.1")
+  val constraintlayout = tagged("constraintlayout", "1.1.2")
   val constraintlayout_solver = constraintlayout("solver")
 }
 
 @Suppress("unused")
-object Google : Grouping("com.google.android") {
-  val material = tagged("material", "1.0.0-alpha3")
+object Com : Grouping("com") {
+  object Android : Grouping(this, "google.android") {
+    val material = tagged("material", "1.0.0-alpha3")
+  }
+
+  object Build : Grouping(this, "android.tools.build") {
+    val gradle = normal("gradle", "3.2.0-alpha18")
+  }
 }
 
 @Suppress("unused")
-object Jetbrains : Grouping("org.jetbrains") {
-  private val kotlin = tagged("kotlin", "1.2.41")
-  val kotlin_gradle_plugin = kotlin("gradle-plugin")
-  val kotlin_stdlib_jdk8 = kotlin("stdlib-jdk8")
+object Kotlin : Grouping("org.jetbrains") {
+  private val kotlin = tagged("kotlin", "1.2.50")
+  val gradle_plugin = kotlin("gradle-plugin")
+  val stdlib_jdk8 = kotlin("stdlib-jdk8")
 }
 
 @Suppress("unused")
 object Rxjava2 : Grouping("io.reactivex.rxjava2") {
-  val rxjava = normal("rxjava", "2.1.7")
   val rxandroid = normal("rxandroid", "2.0.1")
+
+  val rxjava = normal("rxjava", "2.1.7")
 }

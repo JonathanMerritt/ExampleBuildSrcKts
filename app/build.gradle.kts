@@ -56,8 +56,10 @@ dependencies {
   implementation(Androidx.constraintlayout())
   implementation(Androidx.constraintlayout_solver())
 
+  implementation(Com.Android.material())
+
   implementation(Rxjava2.rxjava())
   implementation(Rxjava2.rxandroid())
 
-  implementation(Jetbrains.kotlin_stdlib_jdk8())
+  implementation(Kotlin.stdlib_jdk8())
 }

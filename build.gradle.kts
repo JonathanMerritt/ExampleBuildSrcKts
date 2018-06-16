@@ -7,9 +7,9 @@ buildscript {
   }
 
   dependencies {
-    classpath(Tools.gradle())
+    classpath(Com.Build.gradle())
 
-    classpath(Jetbrains.kotlin_gradle_plugin())
+    classpath(Kotlin.gradle_plugin())
   }
 }
 

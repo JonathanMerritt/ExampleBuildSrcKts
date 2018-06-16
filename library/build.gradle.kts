@@ -52,5 +52,5 @@ dependencies {
   implementation(Rxjava2.rxjava())
   implementation(Rxjava2.rxandroid())
 
-  implementation(Jetbrains.kotlin_stdlib_jdk8())
+  implementation(Kotlin.stdlib_jdk8())
 }
